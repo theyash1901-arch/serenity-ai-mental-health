@@ -182,7 +182,7 @@
                 <h2 style="font-size:32px; margin-bottom:32px;">Your Mood History</h2>
                 <div class="dashboard-grid">
                     <div class="dashboard-card">
-                        <div class="card-value" style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent;" id="avg-mood">--</div>
+                        <div class="card-value" style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;" id="avg-mood">--</div>
                         <div class="card-label">Average Mood Score</div>
                     </div>
                     <div class="dashboard-card">
@@ -205,15 +205,64 @@
             <h1 style="font-size:40px; margin-bottom:16px;">Mental Health Resources</h1>
             <p style="color:#64748b; font-size:18px; margin-bottom:40px;">Curated content to support your mental wellness journey.</p>
             
+            <!-- Crisis Banner -->
+            <div style="background:linear-gradient(135deg, #ef4444 0%, #dc2626 100%); border-radius:20px; padding:32px; margin-bottom:40px; color:white; box-shadow:0 10px 40px rgba(239,68,68,0.3);">
+                <h2 style="color:white; margin-bottom:16px;">🆘 In Crisis? Get Help Now</h2>
+                <p style="margin-bottom:24px; opacity:0.95;">If you're in immediate danger or having thoughts of self-harm, please reach out:</p>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(200px, 1fr)); gap:16px;">
+                    <div style="background:rgba(255,255,255,0.15); padding:16px; border-radius:12px; backdrop-filter:blur(10px);">
+                        <div style="font-size:24px; margin-bottom:8px;">📞</div>
+                        <strong>Call or Text</strong>
+                        <div style="font-size:24px; font-weight:800; margin-top:4px;">988</div>
+                        <small style="opacity:0.9;">24/7 Crisis Lifeline</small>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.15); padding:16px; border-radius:12px; backdrop-filter:blur(10px);">
+                        <div style="font-size:24px; margin-bottom:8px;">💬</div>
+                        <strong>Text HOME to</strong>
+                        <div style="font-size:24px; font-weight:800; margin-top:4px;">741741</div>
+                        <small style="opacity:0.9;">Crisis Text Line</small>
+                    </div>
+                    <div style="background:rgba(255,255,255,0.15); padding:16px; border-radius:12px; backdrop-filter:blur(10px);">
+                        <div style="font-size:24px; margin-bottom:8px;">🌐</div>
+                        <strong>Online Chat</strong>
+                        <div style="font-size:16px; font-weight:600; margin-top:4px;">988lifeline.org</div>
+                        <small style="opacity:0.9;">Web chat available</small>
+                    </div>
+                </div>
+            </div>
+            
             <div class="resource-filters">
-                <button class="filter-btn active" onclick="filterResources('all', this)">All</button>
-                <button class="filter-btn" onclick="filterResources('article', this)">Articles</button>
-                <button class="filter-btn" onclick="filterResources('exercise', this)">Exercises</button>
-                <button class="filter-btn" onclick="filterResources('guide', this)">Guides</button>
-                <button class="filter-btn" onclick="filterResources('tool', this)">Tools</button>
+                <button class="filter-btn active" onclick="filterResources('all', this)">All Resources</button>
+                <button class="filter-btn" onclick="filterResources('article', this)">📰 Articles</button>
+                <button class="filter-btn" onclick="filterResources('exercise', this)">🧘 Exercises</button>
+                <button class="filter-btn" onclick="filterResources('guide', this)">📚 Guides</button>
+                <button class="filter-btn" onclick="filterResources('tool', this)">🛠️ Tools</button>
             </div>
 
             <div class="resource-grid" id="resource-grid"></div>
+            
+            <!-- Professional Help Section -->
+            <div style="margin-top:60px; padding:40px; background:linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius:20px;">
+                <h2 style="margin-bottom:16px;">Need Professional Support?</h2>
+                <p style="color:#64748b; margin-bottom:24px;">While MindSpace provides support, professional therapy can be invaluable for your mental health journey.</p>
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(250px, 1fr)); gap:20px;">
+                    <div style="background:white; padding:24px; border-radius:16px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                        <h3 style="margin-bottom:12px;">🔍 Find a Therapist</h3>
+                        <p style="color:#64748b; font-size:14px; margin-bottom:16px;">Search verified directories of licensed mental health professionals.</p>
+                        <a href="https://www.psychologytoday.com/us/therapists" target="_blank" class="btn btn-outline" style="width:100%; text-decoration:none; justify-content:center;">Search Directory →</a>
+                    </div>
+                    <div style="background:white; padding:24px; border-radius:16px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                        <h3 style="margin-bottom:12px;">💊 Psychiatry Services</h3>
+                        <p style="color:#64748b; font-size:14px; margin-bottom:16px;">Connect with psychiatrists for medication management.</p>
+                        <a href="https://www.psychiatry.org/patients-families/find-a-psychiatrist" target="_blank" class="btn btn-outline" style="width:100%; text-decoration:none; justify-content:center;">Find Psychiatrist →</a>
+                    </div>
+                    <div style="background:white; padding:24px; border-radius:16px; box-shadow:0 2px 8px rgba(0,0,0,0.05);">
+                        <h3 style="margin-bottom:12px;">🏥 Support Groups</h3>
+                        <p style="color:#64748b; font-size:14px; margin-bottom:16px;">Join peer support groups for shared experiences.</p>
+                        <a href="https://www.nami.org/Support-Education/Support-Groups" target="_blank" class="btn btn-outline" style="width:100%; text-decoration:none; justify-content:center;">Find Groups →</a>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 

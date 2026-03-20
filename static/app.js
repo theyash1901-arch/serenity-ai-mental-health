@@ -7,15 +7,114 @@ let currentFilter = 'all';
 
 // Resources Data
 const RESOURCES = [
-  { id: 1, type: 'article', title: 'Understanding Anxiety', desc: 'Learn about anxiety disorders and coping strategies.', time: '8 min read' },
-  { id: 2, type: 'exercise', title: '5-Minute Meditation', desc: 'Quick meditation to calm your mind.', time: '5 min' },
-  { id: 3, type: 'guide', title: 'Sleep Better Tonight', desc: 'Evidence-based tips for quality sleep.', time: '10 min read' },
-  { id: 4, type: 'tool', title: 'Thought Journal', desc: 'Track and reframe negative thoughts.', time: 'Interactive' },
-  { id: 5, type: 'article', title: 'Building Resilience', desc: 'Strengthen your mental fortitude.', time: '12 min read' },
-  { id: 6, type: 'exercise', title: 'Box Breathing', desc: '4-4-4-4 breathing technique.', time: '3 min' },
-  { id: 7, type: 'guide', title: 'Mindfulness 101', desc: 'Introduction to mindfulness practice.', time: '15 min' },
-  { id: 8, type: 'tool', title: 'Mood Tracker', desc: 'Visual mood tracking tool.', time: 'Daily' },
-  { id: 9, type: 'article', title: 'Managing Stress', desc: 'Practical stress management techniques.', time: '9 min read' }
+  { 
+    id: 1, 
+    type: 'article', 
+    title: 'Understanding Anxiety Disorders', 
+    desc: 'Comprehensive guide to recognizing anxiety symptoms, understanding triggers, and learning evidence-based coping strategies.', 
+    time: '8 min read',
+    url: 'https://www.nimh.nih.gov/health/topics/anxiety-disorders',
+    content: 'Anxiety disorders are the most common mental health concern in the United States. Learn about different types including GAD, panic disorder, and social anxiety.'
+  },
+  { 
+    id: 2, 
+    type: 'exercise', 
+    title: '5-Minute Guided Meditation', 
+    desc: 'Quick body scan meditation to release tension and find calm in your busy day.', 
+    time: '5 min',
+    url: 'javascript:startMeditation()',
+    content: 'A simple meditation practice you can do anywhere, anytime. Perfect for beginners.'
+  },
+  { 
+    id: 3, 
+    type: 'guide', 
+    title: 'Sleep Hygiene Guide', 
+    desc: 'Evidence-based strategies to improve sleep quality and reduce nighttime anxiety.', 
+    time: '10 min read',
+    url: 'https://www.sleepfoundation.org/sleep-hygiene',
+    content: 'Learn about sleep cycles, bedroom environment, and habits that promote restful sleep.'
+  },
+  { 
+    id: 4, 
+    type: 'tool', 
+    title: 'Thought Journal', 
+    desc: 'Interactive tool to track and reframe negative thought patterns using CBT techniques.', 
+    time: 'Interactive',
+    url: 'javascript:openThoughtJournal()',
+    content: 'Cognitive Behavioral Therapy tool to identify and challenge unhelpful thoughts.'
+  },
+  { 
+    id: 5, 
+    type: 'article', 
+    title: 'Building Emotional Resilience', 
+    desc: 'Practical strategies to strengthen your ability to bounce back from life\'s challenges.', 
+    time: '12 min read',
+    url: 'https://www.apa.org/topics/resilience',
+    content: 'Resilience is the ability to adapt to difficult situations. Learn how to build this crucial skill.'
+  },
+  { 
+    id: 6, 
+    type: 'exercise', 
+    title: 'Box Breathing Technique', 
+    desc: 'Navy SEAL breathing method: 4 seconds in, 4 hold, 4 out, 4 hold. Instant calm.', 
+    time: '3 min',
+    url: 'javascript:startBoxBreathing()',
+    content: 'Used by military and first responders to stay calm under pressure.'
+  },
+  { 
+    id: 7, 
+    type: 'guide', 
+    title: 'Mindfulness for Beginners', 
+    desc: 'Complete introduction to mindfulness meditation and its mental health benefits.', 
+    time: '15 min',
+    url: 'https://www.mindful.org/meditation/mindfulness-getting-started/',
+    content: 'Start your mindfulness journey with this comprehensive beginner\'s guide.'
+  },
+  { 
+    id: 8, 
+    type: 'tool', 
+    title: 'Gratitude Journal', 
+    desc: 'Daily gratitude practice tool to shift focus toward positive aspects of life.', 
+    time: 'Daily',
+    url: 'javascript:openGratitudeJournal()',
+    content: 'Research shows gratitude practice improves mental health and life satisfaction.'
+  },
+  { 
+    id: 9, 
+    type: 'article', 
+    title: 'Managing Workplace Stress', 
+    desc: 'Practical techniques for handling work-related stress and preventing burnout.', 
+    time: '9 min read',
+    url: 'https://www.helpguide.org/articles/stress/stress-in-the-workplace.htm',
+    content: 'Learn to set boundaries, manage time, and maintain work-life balance.'
+  },
+  { 
+    id: 10, 
+    type: 'exercise', 
+    title: 'Progressive Muscle Relaxation', 
+    desc: 'Systematic tension and release technique to reduce physical stress and anxiety.', 
+    time: '10 min',
+    url: 'javascript:startPMR()',
+    content: 'Tense and relax muscle groups to release physical tension and calm your mind.'
+  },
+  { 
+    id: 11, 
+    type: 'guide', 
+    title: 'Dealing with Depression', 
+    desc: 'Understanding depression symptoms, treatment options, and self-help strategies.', 
+    time: '20 min read',
+    url: 'https://www.nimh.nih.gov/health/topics/depression',
+    content: 'Comprehensive guide to recognizing and managing depression with professional support.'
+  },
+  { 
+    id: 12, 
+    type: 'tool', 
+    title: 'Panic Attack First Aid', 
+    desc: 'Step-by-step guide for managing panic attacks when they occur.', 
+    time: 'Emergency',
+    url: 'javascript:openPanicGuide()',
+    content: 'Immediate strategies to use during a panic attack to regain control.'
+  }
 ];
 
 // Initialize
@@ -491,15 +590,283 @@ function renderResources() {
   const filtered = currentFilter === 'all' ? RESOURCES : RESOURCES.filter(r => r.type === currentFilter);
   
   grid.innerHTML = filtered.map(r => `
-    <div class="resource-card ${r.type}">
+    <div class="resource-card ${r.type}" onclick="openResource(${r.id})">
       <h3 class="resource-title">${r.title}</h3>
       <p class="resource-desc">${r.desc}</p>
       <div class="resource-meta">
         <span>${r.time}</span>
-        <span style="color:#6366f1; font-weight:600;">Read more →</span>
+        <span style="color:#6366f1; font-weight:600;">Open →</span>
       </div>
     </div>
   `).join('');
+}
+
+function openResource(id) {
+  const resource = RESOURCES.find(r => r.id === id);
+  if (!resource) return;
+  
+  // If it's a javascript: URL, execute the function
+  if (resource.url.startsWith('javascript:')) {
+    const funcName = resource.url.replace('javascript:', '').replace('()', '');
+    if (window[funcName]) {
+      window[funcName]();
+    }
+  } else {
+    // Open external link in new tab
+    window.open(resource.url, '_blank');
+  }
+}
+
+// Interactive Tools
+function startMeditation() {
+  showResourceModal('5-Minute Guided Meditation', `
+    <div style="text-align:center; padding:40px 20px;">
+      <div style="font-size:72px; margin-bottom:24px;">🧘</div>
+      <h3 style="margin-bottom:20px;">Body Scan Meditation</h3>
+      <p style="color:#64748b; margin-bottom:32px; line-height:1.8;">
+        Find a comfortable position. Close your eyes or soften your gaze.<br><br>
+        Take three deep breaths...<br><br>
+        Now, bring your attention to your feet. Notice any sensations.<br>
+        Slowly move your awareness up through your legs, torso, arms, and head.<br><br>
+        If your mind wanders, gently bring it back to your body.<br><br>
+        Take your time. There's no rush.
+      </p>
+      <button class="btn btn-primary" onclick="closeResourceModal()">Complete</button>
+    </div>
+  `);
+}
+
+function startBoxBreathing() {
+  let phase = 0;
+  const phases = ['Breathe In', 'Hold', 'Breathe Out', 'Hold'];
+  const duration = 4000;
+  let cycles = 0;
+  const maxCycles = 4;
+  
+  showResourceModal('Box Breathing Exercise', `
+    <div style="text-align:center; padding:40px 20px;">
+      <div style="width:200px; height:200px; margin:0 auto 32px; border:4px solid #6366f1; border-radius:20px; display:flex; align-items:center; justify-content:center; transition:all 1s ease;" id="breathing-box">
+        <div style="font-size:48px;" id="breathing-emoji">💨</div>
+      </div>
+      <h3 id="breathing-phase" style="margin-bottom:12px; font-size:28px;">Breathe In</h3>
+      <p style="color:#64748b; margin-bottom:32px;">4 seconds each phase</p>
+      <div style="font-size:48px; font-weight:800; color:#6366f1; margin-bottom:24px;" id="breathing-count">4</div>
+      <button class="btn btn-outline" onclick="closeResourceModal()">Stop</button>
+    </div>
+  `);
+  
+  const interval = setInterval(() => {
+    const box = document.getElementById('breathing-box');
+    const phaseEl = document.getElementById('breathing-phase');
+    const emoji = document.getElementById('breathing-emoji');
+    const countEl = document.getElementById('breathing-count');
+    
+    if (!box) {
+      clearInterval(interval);
+      return;
+    }
+    
+    phase = (phase + 1) % 4;
+    if (phase === 0) cycles++;
+    
+    if (cycles >= maxCycles) {
+      clearInterval(interval);
+      showToast('Great job! 4 cycles complete.');
+      setTimeout(closeResourceModal, 2000);
+      return;
+    }
+    
+    phaseEl.textContent = phases[phase];
+    
+    // Visual feedback
+    if (phase === 0) { // Breathe in
+      box.style.transform = 'scale(1.3)';
+      box.style.borderColor = '#6366f1';
+      emoji.textContent = '💨';
+    } else if (phase === 1) { // Hold
+      emoji.textContent = '⏸️';
+    } else if (phase === 2) { // Breathe out
+      box.style.transform = 'scale(1)';
+      box.style.borderColor = '#10b981';
+      emoji.textContent = '😌';
+    } else { // Hold
+      emoji.textContent = '⏸️';
+    }
+    
+    // Countdown
+    let count = 4;
+    countEl.textContent = count;
+    const countInterval = setInterval(() => {
+      count--;
+      if (countEl) countEl.textContent = count;
+      if (count <= 0) clearInterval(countInterval);
+    }, 1000);
+    
+  }, duration);
+}
+
+function openThoughtJournal() {
+  showResourceModal('Thought Journal - CBT Tool', `
+    <div style="padding:20px;">
+      <p style="color:#64748b; margin-bottom:24px;">Identify and challenge negative thoughts using Cognitive Behavioral Therapy techniques.</p>
+      
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-weight:600; margin-bottom:8px;">What's the negative thought?</label>
+        <textarea id="negative-thought" class="form-input" rows="3" placeholder="Example: I'm going to fail this presentation..."></textarea>
+      </div>
+      
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-weight:600; margin-bottom:8px;">What evidence supports this thought?</label>
+        <textarea id="evidence-for" class="form-input" rows="2" placeholder="List facts that support this thought..."></textarea>
+      </div>
+      
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-weight:600; margin-bottom:8px;">What evidence contradicts this thought?</label>
+        <textarea id="evidence-against" class="form-input" rows="2" placeholder="List facts that contradict this thought..."></textarea>
+      </div>
+      
+      <div style="margin-bottom:24px;">
+        <label style="display:block; font-weight:600; margin-bottom:8px;">Balanced thought:</label>
+        <textarea id="balanced-thought" class="form-input" rows="3" placeholder="Reframe the thought in a more balanced way..."></textarea>
+      </div>
+      
+      <button class="btn btn-primary" style="width:100%;" onclick="saveThoughtJournal()">Save Entry</button>
+    </div>
+  `);
+}
+
+function saveThoughtJournal() {
+  const negative = document.getElementById('negative-thought').value;
+  const evidenceFor = document.getElementById('evidence-for').value;
+  const evidenceAgainst = document.getElementById('evidence-against').value;
+  const balanced = document.getElementById('balanced-thought').value;
+  
+  if (!negative || !balanced) {
+    showToast('Please fill in at least the thought and balanced reframe');
+    return;
+  }
+  
+  showToast('Thought journal entry saved!');
+  closeResourceModal();
+}
+
+function openGratitudeJournal() {
+  showResourceModal('Gratitude Journal', `
+    <div style="padding:20px;">
+      <p style="color:#64748b; margin-bottom:24px;">List 3 things you're grateful for today. Research shows this simple practice improves mental health.</p>
+      
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-weight:600; margin-bottom:8px;">1. I'm grateful for...</label>
+        <input type="text" id="gratitude-1" class="form-input" placeholder="Example: My morning coffee">
+      </div>
+      
+      <div style="margin-bottom:20px;">
+        <label style="display:block; font-weight:600; margin-bottom:8px;">2. I'm grateful for...</label>
+        <input type="text" id="gratitude-2" class="form-input" placeholder="Example: A friend who listened">
+      </div>
+      
+      <div style="margin-bottom:24px;">
+        <label style="display:block; font-weight:600; margin-bottom:8px;">3. I'm grateful for...</label>
+        <input type="text" id="gratitude-3" class="form-input" placeholder="Example: The sunshine today">
+      </div>
+      
+      <button class="btn btn-primary" style="width:100%;" onclick="saveGratitude()">Save Gratitude Entry</button>
+    </div>
+  `);
+}
+
+function saveGratitude() {
+  const g1 = document.getElementById('gratitude-1').value;
+  const g2 = document.getElementById('gratitude-2').value;
+  const g3 = document.getElementById('gratitude-3').value;
+  
+  if (!g1 || !g2 || !g3) {
+    showToast('Please fill in all 3 gratitude items');
+    return;
+  }
+  
+  showToast('Gratitude entry saved! 🙏');
+  closeResourceModal();
+}
+
+function startPMR() {
+  showResourceModal('Progressive Muscle Relaxation', `
+    <div style="text-align:center; padding:40px 20px;">
+      <div style="font-size:72px; margin-bottom:24px;">💪</div>
+      <h3 style="margin-bottom:20px;">Progressive Muscle Relaxation</h3>
+      <p style="color:#64748b; margin-bottom:32px; line-height:1.8;">
+        This technique involves tensing and relaxing muscle groups.<br><br>
+        <strong>Instructions:</strong><br>
+        1. Tense each muscle group for 5 seconds<br>
+        2. Release and relax for 10 seconds<br>
+        3. Notice the difference<br><br>
+        Start with your feet and work up to your face.<br>
+        Feet → Legs → Stomach → Chest → Arms → Shoulders → Face
+      </p>
+      <button class="btn btn-primary" onclick="closeResourceModal()">Got it</button>
+    </div>
+  `);
+}
+
+function openPanicGuide() {
+  showResourceModal('Panic Attack First Aid', `
+    <div style="padding:20px;">
+      <div style="background:#fee2e2; border-left:4px solid #ef4444; padding:16px; border-radius:8px; margin-bottom:24px;">
+        <strong style="color:#991b1b;">If you're in crisis, call 988 immediately</strong>
+      </div>
+      
+      <h3 style="margin-bottom:16px;">During a Panic Attack:</h3>
+      
+      <div style="margin-bottom:16px; padding:16px; background:#f8fafc; border-radius:12px;">
+        <strong>1. Recognize it's a panic attack</strong>
+        <p style="color:#64748b; margin-top:8px;">Remind yourself: "This is anxiety. It will pass. I am safe."</p>
+      </div>
+      
+      <div style="margin-bottom:16px; padding:16px; background:#f8fafc; border-radius:12px;">
+        <strong>2. Focus on breathing</strong>
+        <p style="color:#64748b; margin-top:8px;">Breathe in for 4, hold for 4, out for 4. Repeat.</p>
+      </div>
+      
+      <div style="margin-bottom:16px; padding:16px; background:#f8fafc; border-radius:12px;">
+        <strong>3. Ground yourself (5-4-3-2-1)</strong>
+        <p style="color:#64748b; margin-top:8px;">
+          Name 5 things you see<br>
+          4 things you can touch<br>
+          3 things you hear<br>
+          2 things you smell<br>
+          1 thing you taste
+        </p>
+      </div>
+      
+      <div style="margin-bottom:24px; padding:16px; background:#f8fafc; border-radius:12px;">
+        <strong>4. Stay where you are</strong>
+        <p style="color:#64748b; margin-top:8px;">Don't run away. The feeling will pass in 5-20 minutes.</p>
+      </div>
+      
+      <button class="btn btn-primary" style="width:100%; margin-bottom:12px;" onclick="startBoxBreathing()">Start Breathing Exercise</button>
+      <button class="btn btn-outline" style="width:100%;" onclick="closeResourceModal()">Close</button>
+    </div>
+  `);
+}
+
+// Resource Modal
+function showResourceModal(title, content) {
+  const modal = document.createElement('div');
+  modal.id = 'resource-modal';
+  modal.className = 'modal-overlay open';
+  modal.innerHTML = `
+    <div class="modal" style="max-width:600px;">
+      <button onclick="closeResourceModal()" style="position:absolute; top:20px; right:20px; background:none; border:none; font-size:24px; cursor:pointer; color:#64748b;">&times;</button>
+      <h2 style="margin-bottom:24px;">${title}</h2>
+      ${content}
+    </div>
+  `;
+  document.body.appendChild(modal);
+}
+
+function closeResourceModal() {
+  const modal = document.getElementById('resource-modal');
+  if (modal) modal.remove();
 }
 
 // Utility Functions

@@ -109,8 +109,8 @@ nav {
   font-weight: 800;
   background: var(--gradient-1);
   -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
   background-clip: text;
+  -webkit-text-fill-color: transparent;
 }
 .nav-links {
   display: flex;
@@ -560,9 +560,25 @@ nav {
   transition: all 0.3s;
   border-left: 4px solid;
   cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+.resource-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(135deg, rgba(99, 102, 241, 0.05) 0%, rgba(236, 72, 153, 0.05) 100%);
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+.resource-card:hover::before {
+  opacity: 1;
 }
 .resource-card:hover {
-  transform: translateY(-4px);
+  transform: translateY(-8px);
   box-shadow: var(--shadow-lg);
 }
 .resource-card.article { border-color: #3b82f6; }
@@ -573,12 +589,16 @@ nav {
   font-size: 18px;
   font-weight: 700;
   margin-bottom: 12px;
+  position: relative;
+  z-index: 1;
 }
 .resource-desc {
   color: var(--gray);
   font-size: 14px;
   line-height: 1.6;
   margin-bottom: 16px;
+  position: relative;
+  z-index: 1;
 }
 .resource-meta {
   display: flex;
@@ -586,6 +606,8 @@ nav {
   align-items: center;
   font-size: 13px;
   color: var(--gray);
+  position: relative;
+  z-index: 1;
 }
 
 /* Toast */
