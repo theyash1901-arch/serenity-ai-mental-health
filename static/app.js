@@ -131,7 +131,69 @@ document.addEventListener('DOMContentLoaded', async () => {
     console.error('Auth check failed:', e);
   }
   renderResources();
+  loadPlatformStats();
 });
+
+// Load Platform Statistics
+async function loadPlatformStats() {
+  try {
+    const res = await fetch('/api/stats');
+    if (res.ok) {
+      const stats = await res.json();
+      
+      // Update hero stats
+      document.getElementById('stat-users').textContent = stats.active_users || 0;
+      document.getElementById('stat-messages').textContent = formatNumber(stats.total_messages || 0);
+      document.getElementById('stat-moods').textContent = formatNumber(stats.total_moods || 0);
+      
+      // Render mood distribution chart
+      renderMoodChart(stats.mood_distribution || []);
+    }
+  } catch (e) {
+    console.error('Failed to load stats:', e);
+    // Show placeholder values
+    document.getElementById('stat-users').textContent = '0';
+    document.getElementById('stat-messages').textContent = '0';
+    document.getElementById('stat-moods').textContent = '0';
+  }
+}
+
+function formatNumber(num) {
+  if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
+  if (num >= 1000) return (num / 1000).toFixed(1) + 'K';
+  return num.toString();
+}
+
+function renderMoodChart(moodData) {
+  const chart = document.getElementById('mood-chart');
+  if (!chart) return;
+  
+  const moodColors = {
+    'Happy': 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
+    'Calm': 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
+    'Sad': 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
+    'Anxious': 'linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%)',
+    'Angry': 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)'
+  };
+  
+  if (moodData.length === 0) {
+    chart.innerHTML = '<p style="color:#64748b; text-align:center; width:100%;">No mood data yet. Start tracking to see insights!</p>';
+    return;
+  }
+  
+  const maxCount = Math.max(...moodData.map(m => m.count));
+  
+  chart.innerHTML = moodData.map(mood => {
+    const height = (mood.count / maxCount) * 100;
+    return `
+      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;">
+        <div style="font-weight:600; font-size:14px; color:#64748b;">${mood.count}</div>
+        <div style="width:100%; max-width:80px; height:${height}%; min-height:20px; background:${moodColors[mood._id] || '#e2e8f0'}; border-radius:8px 8px 0 0; transition:height 0.5s ease;"></div>
+        <div style="font-size:12px; color:#64748b; font-weight:500;">${mood._id}</div>
+      </div>
+    `;
+  }).join('');
+}
 
 // Page Navigation
 function showPage(pageId) {
@@ -414,6 +476,10 @@ async function handleSendClick() {
   }
   if (!currentSessionId) {
     await createNewSession();
+    if (!currentSessionId) {
+      showToast('Failed to create session');
+      return;
+    }
   }
   
   input.value = '';
@@ -426,18 +492,27 @@ async function handleSendClick() {
   sendBtn.innerHTML = '<span class="loading"></span>';
   
   try {
-    const res = await fetch(`/api/sessions/${currentSessionId}/messages`, {
+    const res = await fetch('/api/chat', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ message: text })
+      body: JSON.stringify({ 
+        message: text,
+        session_id: currentSessionId
+      })
     });
     
-    if (!res.ok) throw new Error('Failed to send message');
+    if (!res.ok) {
+      const error = await res.json();
+      throw new Error(error.error || 'Failed to send message');
+    }
     
     const data = await res.json();
-    appendMessage(data.response || data.message || 'I understand. Tell me more.', 'ai');
+    appendMessage(data.reply || 'I understand. Tell me more.', 'ai');
+    loadUserSessions(); // Refresh session list
   } catch (error) {
-    appendMessage('I apologize, but I\'m having trouble connecting right now. Please try again.', 'ai');
+    console.error('Chat error:', error);
+    appendMessage('I apologize, but I\'m having trouble connecting right now. Please check your API key configuration and try again.', 'ai');
+    showToast(error.message || 'Failed to send message');
   } finally {
     sendBtn.disabled = false;
     sendBtn.innerHTML = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>';

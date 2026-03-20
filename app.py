@@ -47,7 +47,7 @@ with app.app_context():
 def index():
     return render_template("index.html")
 
-@app.route("/api/auth/signup", methods=["POST"])
+@app.route("/api/auth/register", methods=["POST"])
 def signup():
     try:
         data = request.get_json()
@@ -242,6 +242,50 @@ def get_journal():
 @app.route("/api/health", methods=["GET"])
 def health():
     return jsonify({"status": "ok", "api_key_set": bool(os.getenv("GEMINI_API_KEY")), "mongo_uri_set": bool(os.getenv("MONGO_URI"))})
+
+@app.route("/api/stats", methods=["GET"])
+def get_stats():
+    """Get platform statistics"""
+    try:
+        db = get_db()
+        
+        # Count total users
+        total_users = db.users.count_documents({})
+        
+        # Count total sessions
+        total_sessions = db.sessions.count_documents({})
+        
+        # Count total messages
+        total_messages = db.sessions.aggregate([
+            {"$project": {"message_count": {"$size": "$messages"}}}
+        ])
+        message_count = sum([s.get("message_count", 0) for s in total_messages])
+        
+        # Count total mood entries
+        total_moods = db.mood_entries.count_documents({})
+        
+        # Get mood distribution
+        mood_pipeline = [
+            {"$group": {"_id": "$mood", "count": {"$sum": 1}}},
+            {"$sort": {"count": -1}}
+        ]
+        mood_dist = list(db.mood_entries.aggregate(mood_pipeline))
+        
+        # Active users (logged in last 7 days)
+        from datetime import datetime, timedelta
+        week_ago = datetime.utcnow() - timedelta(days=7)
+        active_users = db.users.count_documents({"last_login": {"$gte": week_ago}})
+        
+        return jsonify({
+            "total_users": total_users,
+            "total_sessions": total_sessions,
+            "total_messages": message_count,
+            "total_moods": total_moods,
+            "active_users": active_users,
+            "mood_distribution": mood_dist
+        })
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(debug=True, port=5000)

@@ -39,6 +39,22 @@
                         <button class="btn btn-primary" onclick="showPage('chat')">Start Chatting →</button>
                         <button class="btn btn-outline" style="background:rgba(255,255,255,0.2); border-color:white; color:white;" onclick="showPage('mood')">Track Mood</button>
                     </div>
+                    
+                    <!-- Real-time Stats -->
+                    <div style="margin-top:40px; display:grid; grid-template-columns:repeat(3, 1fr); gap:20px;">
+                        <div style="background:rgba(255,255,255,0.15); backdrop-filter:blur(10px); padding:20px; border-radius:16px; text-align:center;">
+                            <div style="font-size:32px; font-weight:800; color:white;" id="stat-users">--</div>
+                            <div style="font-size:13px; color:rgba(255,255,255,0.9);">Active Users</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.15); backdrop-filter:blur(10px); padding:20px; border-radius:16px; text-align:center;">
+                            <div style="font-size:32px; font-weight:800; color:white;" id="stat-messages">--</div>
+                            <div style="font-size:13px; color:rgba(255,255,255,0.9);">Messages Sent</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.15); backdrop-filter:blur(10px); padding:20px; border-radius:16px; text-align:center;">
+                            <div style="font-size:32px; font-weight:800; color:white;" id="stat-moods">--</div>
+                            <div style="font-size:13px; color:rgba(255,255,255,0.9);">Moods Tracked</div>
+                        </div>
+                    </div>
                 </div>
                 <div class="hero-image">
                     <div class="hero-card">
@@ -64,6 +80,35 @@
         </section>
 
         <div class="container">
+            <!-- Mood Distribution Chart -->
+            <div style="background:white; border-radius:24px; padding:40px; margin-bottom:60px; box-shadow:0 10px 40px rgba(0,0,0,0.1);">
+                <h2 style="text-align:center; font-size:32px; margin-bottom:16px;">Community Mood Insights</h2>
+                <p style="text-align:center; color:#64748b; margin-bottom:40px;">Real-time emotional wellness data from our community</p>
+                <div id="mood-chart" style="display:flex; align-items:flex-end; justify-content:center; gap:20px; height:200px; margin-bottom:20px;"></div>
+                <div style="display:flex; justify-content:center; gap:24px; flex-wrap:wrap;">
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:16px; height:16px; border-radius:4px; background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);"></div>
+                        <span style="font-size:14px; color:#64748b;">Happy</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:16px; height:16px; border-radius:4px; background:linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);"></div>
+                        <span style="font-size:14px; color:#64748b;">Calm</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:16px; height:16px; border-radius:4px; background:linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);"></div>
+                        <span style="font-size:14px; color:#64748b;">Sad</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:16px; height:16px; border-radius:4px; background:linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);"></div>
+                        <span style="font-size:14px; color:#64748b;">Anxious</span>
+                    </div>
+                    <div style="display:flex; align-items:center; gap:8px;">
+                        <div style="width:16px; height:16px; border-radius:4px; background:linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);"></div>
+                        <span style="font-size:14px; color:#64748b;">Angry</span>
+                    </div>
+                </div>
+            </div>
+            
             <h2 style="text-align:center; font-size:40px; margin-bottom:48px;">Everything You Need</h2>
             <div class="dashboard-grid">
                 <div class="dashboard-card">
@@ -93,6 +138,37 @@
                     </div>
                     <h3 style="font-size:20px; margin-bottom:12px;">Resources</h3>
                     <p style="color:#64748b;">Curated articles, tools, and professional help directories for your wellness.</p>
+                </div>
+            </div>
+            
+            <!-- Why Choose MindSpace -->
+            <div style="margin-top:80px; text-align:center;">
+                <h2 style="font-size:40px; margin-bottom:20px;">Why Choose MindSpace?</h2>
+                <p style="color:#64748b; font-size:18px; margin-bottom:60px; max-width:700px; margin-left:auto; margin-right:auto;">
+                    We're not just another mental health app. We're your companion in the journey to better mental wellness.
+                </p>
+                
+                <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(280px, 1fr)); gap:32px; margin-bottom:60px;">
+                    <div style="text-align:center;">
+                        <div style="width:80px; height:80px; margin:0 auto 20px; background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:40px;">🔒</div>
+                        <h3 style="margin-bottom:12px;">100% Private</h3>
+                        <p style="color:#64748b; font-size:14px;">Your conversations are encrypted. Use anonymous mode for complete privacy.</p>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="width:80px; height:80px; margin:0 auto 20px; background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:40px;">⚡</div>
+                        <h3 style="margin-bottom:12px;">Instant Support</h3>
+                        <p style="color:#64748b; font-size:14px;">No waiting rooms. Get help the moment you need it, 24/7.</p>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="width:80px; height:80px; margin:0 auto 20px; background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:40px;">🎯</div>
+                        <h3 style="margin-bottom:12px;">Evidence-Based</h3>
+                        <p style="color:#64748b; font-size:14px;">Our AI uses proven CBT and mindfulness techniques.</p>
+                    </div>
+                    <div style="text-align:center;">
+                        <div style="width:80px; height:80px; margin:0 auto 20px; background:linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); border-radius:20px; display:flex; align-items:center; justify-content:center; font-size:40px;">💝</div>
+                        <h3 style="margin-bottom:12px;">Always Free</h3>
+                        <p style="color:#64748b; font-size:14px;">Mental health support should be accessible to everyone.</p>
+                    </div>
                 </div>
             </div>
         </div>
