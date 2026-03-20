@@ -215,9 +215,37 @@ window.addEventListener('scroll', () => {
 });
 
 // ── MODAL ──
-function openModal() { document.getElementById('modal-overlay').classList.add('open'); }
-function closeModal() { document.getElementById('modal-overlay').classList.remove('open'); }
+function openModal() { 
+  document.getElementById('modal-overlay').classList.add('open'); 
+  // Focus first input after modal opens
+  setTimeout(() => {
+    const email = document.getElementById('modal-email');
+    if (email && email.style.display !== 'none') email.focus();
+  }, 100);
+}
+function closeModal() { 
+  document.getElementById('modal-overlay').classList.remove('open'); 
+  // Clear error message
+  const err = document.getElementById('modal-error');
+  if (err) err.style.display = 'none';
+}
 function handleOverlayClick(e) { if (e.target.id === 'modal-overlay') closeModal(); }
+
+// Add Enter key support for modal
+document.addEventListener('DOMContentLoaded', () => {
+  const modalFields = document.getElementById('modal-email');
+  if (modalFields) {
+    document.getElementById('modal-email').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleModalSubmit();
+    });
+    document.getElementById('modal-password').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleModalSubmit();
+    });
+    document.getElementById('modal-confirm').addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') handleModalSubmit();
+    });
+  }
+});
 
 function switchModalTab(mode) {
   document.querySelectorAll('.mtab').forEach(b => b.classList.remove('active'));
@@ -230,15 +258,24 @@ function switchModalTab(mode) {
   const divi = document.getElementById('modal-divider');
   const err = document.getElementById('modal-error');
   err.style.display = 'none';
+  
+  // Clear inputs when switching tabs
+  email.value = '';
+  pwd.value = '';
+  conf.value = '';
+  
   if (mode === 'login') {
     email.style.display='block'; pwd.style.display='block'; conf.style.display='none';
     anonBtn.style.display='block'; divi.style.display='flex'; submitBtn.textContent='Sign In';
+    email.focus();
   } else if (mode === 'signup') {
     email.style.display='block'; pwd.style.display='block'; conf.style.display='block';
     anonBtn.style.display='block'; divi.style.display='flex'; submitBtn.textContent='Create Account';
+    email.focus();
   } else if (mode === 'anon') {
     email.style.display='none'; pwd.style.display='none'; conf.style.display='none';
     anonBtn.style.display='none'; divi.style.display='none'; submitBtn.textContent='Continue Anonymously';
+    submitBtn.focus();
   }
 }
 
@@ -268,10 +305,33 @@ async function handleModalSubmit() {
   const conf  = document.getElementById('modal-confirm').value;
   const err   = document.getElementById('modal-error');
   err.style.display = 'none';
-  if (!email || !pwd) { err.textContent = 'Please fill in all fields.'; err.style.display='block'; return; }
+  
+  // Validation
+  if (!email || !pwd) { 
+    err.textContent = 'Please fill in all fields.'; 
+    err.style.display='block'; 
+    return; 
+  }
+  
+  // Email validation
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailRegex.test(email)) {
+    err.textContent = 'Please enter a valid email address.';
+    err.style.display='block';
+    return;
+  }
+  
   if (tab === 'signup') {
-    if (pwd.length < 6) { err.textContent = 'Password must be at least 6 characters.'; err.style.display='block'; return; }
-    if (pwd !== conf)   { err.textContent = 'Passwords do not match.'; err.style.display='block'; return; }
+    if (pwd.length < 6) { 
+      err.textContent = 'Password must be at least 6 characters.'; 
+      err.style.display='block'; 
+      return; 
+    }
+    if (pwd !== conf) { 
+      err.textContent = 'Passwords do not match.'; 
+      err.style.display='block'; 
+      return; 
+    }
     await handleSignup(email, pwd, err);
   } else {
     await handleLogin(email, pwd, err);
@@ -279,23 +339,57 @@ async function handleModalSubmit() {
 }
 
 async function handleSignup(email, pwd, err) {
+  const submitBtn = document.getElementById('modal-submit');
+  const originalText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Creating account...';
   try {
     const res = await fetch('/api/auth/register', { method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({email, password: pwd, username: email.split('@')[0]}) });
     const data = await res.json();
-    if (!res.ok) { err.textContent = data.error || 'Registration failed.'; err.style.display='block'; return; }
+    if (!res.ok) { 
+      err.textContent = data.error || 'Registration failed. Please try again.'; 
+      err.style.display='block'; 
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+      return; 
+    }
     currentUser = data; closeModal(); updateNav(); createNewSession(); showToast('Welcome to Serenity.');
-  } catch(e) { err.textContent = 'Something went wrong. Please try again.'; err.style.display='block'; }
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+  } catch(e) { 
+    err.textContent = 'Network error. Please check your connection.'; 
+    err.style.display='block'; 
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+  }
 }
 
 async function handleLogin(email, pwd, err) {
+  const submitBtn = document.getElementById('modal-submit');
+  const originalText = submitBtn.textContent;
+  submitBtn.disabled = true;
+  submitBtn.textContent = 'Signing in...';
   try {
     const res = await fetch('/api/auth/login', { method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({email, password: pwd}) });
     const data = await res.json();
-    if (!res.ok) { err.textContent = data.error || 'Login failed.'; err.style.display='block'; return; }
+    if (!res.ok) { 
+      err.textContent = data.error || 'Invalid credentials. Please try again.'; 
+      err.style.display='block'; 
+      submitBtn.disabled = false;
+      submitBtn.textContent = originalText;
+      return; 
+    }
     currentUser = data; closeModal(); updateNav(); loadUserSessions(); updateStreak(); showToast('Welcome back.');
-  } catch(e) { err.textContent = 'Something went wrong. Please try again.'; err.style.display='block'; }
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+  } catch(e) { 
+    err.textContent = 'Network error. Please check your connection.'; 
+    err.style.display='block'; 
+    submitBtn.disabled = false;
+    submitBtn.textContent = originalText;
+  }
 }
 
 async function handleAnonymous() {
@@ -322,45 +416,70 @@ async function createNewSession() {
   try {
     const res = await fetch('/api/sessions', { method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({title:'New Conversation'}) });
+    if (!res.ok) throw new Error('Failed to create session');
     const data = await res.json();
     currentSessionId = data._id || data.id;
     chatStarted = false;
     document.getElementById('chat-messages').innerHTML = '';
     initChat();
     loadUserSessions();
-  } catch(e) { console.error(e); }
+  } catch(e) { 
+    console.error('Create session error:', e);
+    showToast('Could not create new session. Please try again.');
+    throw e;
+  }
 }
 
 async function loadUserSessions() {
   if (!currentUser) return;
   try {
     const res = await fetch('/api/sessions');
+    if (!res.ok) throw new Error('Failed to load sessions');
     const data = await res.json();
     const list = document.getElementById('session-list');
+    if (!list) return;
     list.innerHTML = '';
-    (data.sessions || []).slice(0,12).forEach(s => {
+    const sessions = data.sessions || [];
+    if (sessions.length === 0) {
+      list.innerHTML = '<div style="padding:14px;text-align:center;font-size:11px;color:var(--warm-gray);font-style:italic;">No conversations yet</div>';
+      return;
+    }
+    sessions.slice(0,12).forEach(s => {
       const div = document.createElement('div');
       div.className = 'session-item' + (s._id === currentSessionId || s.id === currentSessionId ? ' active' : '');
       div.innerHTML = `<div class="s-title">${sanitize(s.title || 'Conversation')}</div><div class="s-date">${formatDate(s.created_at)}</div>`;
       div.onclick = () => loadSession(s._id || s.id);
       list.appendChild(div);
     });
-  } catch(e) { console.error(e); }
+  } catch(e) { 
+    console.error('Load sessions error:', e);
+  }
 }
 
 async function loadSession(id) {
   currentSessionId = id; chatStarted = true;
-  document.getElementById('chat-messages').innerHTML = '';
+  const msgs = document.getElementById('chat-messages');
+  msgs.innerHTML = '<div style="text-align:center;padding:20px;color:var(--warm-gray);font-size:13px;">Loading conversation...</div>';
   document.querySelectorAll('.session-item').forEach(el => el.classList.remove('active'));
   try {
     const res = await fetch(`/api/sessions/${id}/messages`);
+    if (!res.ok) throw new Error('Failed to load messages');
     const data = await res.json();
-    (data.messages || []).forEach(m => {
-      if (m.role === 'user') appendUser(m.content, extractTime(m.created_at));
-      else appendAI(m.content, extractTime(m.created_at));
-    });
+    msgs.innerHTML = '';
+    const messages = data.messages || [];
+    if (messages.length === 0) {
+      initChat();
+    } else {
+      messages.forEach(m => {
+        if (m.role === 'user') appendUser(m.content, extractTime(m.created_at));
+        else appendAI(m.content, extractTime(m.created_at));
+      });
+    }
     loadUserSessions();
-  } catch(e) { console.error(e); }
+  } catch(e) { 
+    console.error('Load session error:', e);
+    msgs.innerHTML = '<div style="text-align:center;padding:20px;color:#DC2626;font-size:13px;">Failed to load conversation. Please try again.</div>';
+  }
 }
 
 // ── CHAT ──
@@ -385,26 +504,38 @@ function handleSendClick() {
 
 async function sendMessage(text) {
   if (!currentUser) { openModal(); return; }
-  if (!currentSessionId) { await createNewSession(); }
+  if (!currentSessionId) { 
+    try {
+      await createNewSession(); 
+    } catch(e) {
+      showToast('Failed to create session. Please try again.');
+      return;
+    }
+  }
   appendUser(text, now());
   showTyping();
   isLoading = true;
-  document.getElementById('send-btn').classList.add('sending');
+  const sendBtn = document.getElementById('send-btn');
+  sendBtn.classList.add('sending');
+  sendBtn.disabled = true;
   try {
     const res = await fetch(`/api/sessions/${currentSessionId}/messages`, {
       method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({message: text})
     });
+    if (!res.ok) throw new Error('API request failed');
     const data = await res.json();
     hideTyping();
     appendAITyped(data.response || data.message || 'I am here with you.');
     loadUserSessions();
   } catch(e) {
+    console.error('Send message error:', e);
     hideTyping();
-    appendAI('I am here. Something went wrong on my end — please try again.');
+    appendAI('I apologize — I am having trouble connecting right now. Please try again in a moment.');
   } finally {
     isLoading = false;
-    document.getElementById('send-btn').classList.remove('sending');
+    sendBtn.classList.remove('sending');
+    sendBtn.disabled = false;
   }
 }
 
@@ -494,7 +625,7 @@ function appendUser(text, time) {
     </div>
     <div class="c-avatar u">${initials}</div>`;
   msgs.appendChild(wrap);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.scrollTo({ top: msgs.scrollHeight, behavior: 'smooth' });
 }
 
 function reactMsg(btn, label) {
@@ -514,7 +645,7 @@ function showTyping() {
     </div>
     <div class="typing-indicator"><span></span><span></span><span></span></div>`;
   msgs.appendChild(div);
-  msgs.scrollTop = msgs.scrollHeight;
+  msgs.scrollTo({ top: msgs.scrollHeight, behavior: 'smooth' });
 }
 
 function hideTyping() {
@@ -546,13 +677,17 @@ async function loadMoodData() {
   if (!currentUser) return;
   try {
     const res = await fetch('/api/mood');
+    if (!res.ok) throw new Error('Failed to load mood data');
     const data = await res.json();
     const entries = data.entries || [];
     buildBigChart(entries);
     updateMoodStats(entries);
     renderRecentEntries(entries);
     buildEmoChips();
-  } catch(e) { console.error(e); }
+  } catch(e) { 
+    console.error('Load mood data error:', e);
+    showToast('Could not load mood data. Please refresh the page.');
+  }
 }
 
 function loadWeeklyMiniChart() {
@@ -587,8 +722,8 @@ function buildBigChart(entries) {
     const mood = dayEntries.length ? dayEntries[dayEntries.length-1].mood : null;
     cols.push({day: days[d.getDay()], score, mood, hasData: dayEntries.length > 0});
   }
-  container.innerHTML = cols.map(c => `
-    <div class="bar-col">
+  container.innerHTML = cols.map((c, idx) => `
+    <div class="bar-col" style="animation: fadeUp .5s cubic-bezier(.16,1,.3,1) forwards; animation-delay: ${idx * 0.05}s; opacity: 0;">
       <div class="bar-val" style="color:${c.hasData ? getMoodColor(c.mood) : 'var(--warm-gray)'}">${c.hasData ? c.score : ''}</div>
       <div class="bar-div" style="height:${c.hasData ? (c.score/5)*100 : 8}%;background:${c.hasData ? getMoodColor(c.mood) : 'rgba(168,213,186,.2)'}"></div>
       <div class="bar-day">${c.day}</div>
@@ -672,16 +807,27 @@ async function saveMoodEntry() {
   if (!selectedMood) { showToast('Please select a mood first.'); return; }
   if (!currentUser) { openModal(); return; }
   const note = document.getElementById('mood-journal').value.trim();
+  const saveBtn = document.querySelector('.btn-primary.full-width');
+  const originalText = saveBtn.textContent;
+  saveBtn.disabled = true;
+  saveBtn.textContent = 'Saving...';
   try {
-    await fetch('/api/mood', { method:'POST', headers:{'Content-Type':'application/json'},
+    const res = await fetch('/api/mood', { method:'POST', headers:{'Content-Type':'application/json'},
       body: JSON.stringify({mood: selectedMood, mood_score: selectedMoodScore, note, emotions: selectedEmotions}) });
-    showToast('Mood entry saved.');
+    if (!res.ok) throw new Error('Failed to save');
+    showToast('Mood entry saved successfully.');
     document.getElementById('mood-journal').value = '';
     selectedMood = null; selectedMoodScore = 3; selectedEmotions = [];
     document.querySelectorAll('.ml-ms-btn').forEach(b => b.classList.remove('sel'));
     document.querySelectorAll('.emo-chip').forEach(b => b.classList.remove('sel'));
     loadMoodData(); updateStreak();
-  } catch(e) { showToast('Could not save entry. Please try again.'); }
+  } catch(e) { 
+    console.error('Save mood error:', e);
+    showToast('Could not save entry. Please check your connection.'); 
+  } finally {
+    saveBtn.disabled = false;
+    saveBtn.textContent = originalText;
+  }
 }
 
 // ── RESOURCES ──

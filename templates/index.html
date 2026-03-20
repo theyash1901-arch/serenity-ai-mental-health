@@ -347,8 +347,8 @@
                 <button onclick="sendMessage(this.textContent)">I feel overwhelmed</button>
             </div>
             <div class="cm-input-area">
-                <textarea id="chat-input" placeholder="Share what's on your mind..." oninput="autoResize(this)" onkeydown="handleEnter(event)"></textarea>
-                <button id="send-btn" class="send-btn" onclick="handleSendClick()">
+                <textarea id="chat-input" placeholder="Share what's on your mind..." oninput="autoResize(this)" onkeydown="handleEnter(event)" maxlength="2000" aria-label="Message input"></textarea>
+                <button id="send-btn" class="send-btn" onclick="handleSendClick()" aria-label="Send message">
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
                 </button>
             </div>
@@ -436,7 +436,7 @@
                         </div>
                     </div>
                     <div id="emo-chips" class="ml-emo-chips"></div>
-                    <textarea id="mood-journal" placeholder="Add a journal entry (optional) — what's on your mind?"></textarea>
+                    <textarea id="mood-journal" placeholder="Add a journal entry (optional) — what's on your mind?" maxlength="1000" aria-label="Mood journal entry"></textarea>
                     <button class="btn-primary full-width" onclick="saveMoodEntry()">Save Entry</button>
                     <div id="save-mood-msg" style="display:none;margin-top:12px;font-size:13px;text-align:center"></div>
                 </div>
@@ -544,10 +544,10 @@
                 <button class="mtab" id="mtab-anon" onclick="switchModalTab('anon')">Anonymous</button>
             </div>
             <div id="modal-error" style="display:none;color:#C0392B;font-size:13px;margin:-8px 0 8px"></div>
-            <div id="modal-fields" class="modal-fields">
-                <input type="email" id="modal-email" placeholder="Email address">
-                <input type="password" id="modal-password" placeholder="Password (min 6 chars)">
-                <input type="password" id="modal-confirm" placeholder="Confirm Password" style="display:none">
+            <div class="modal-fields">
+                <input type="email" id="modal-email" placeholder="Email address" autocomplete="email" required>
+                <input type="password" id="modal-password" placeholder="Password (min 6 chars)" autocomplete="current-password" required>
+                <input type="password" id="modal-confirm" placeholder="Confirm Password" autocomplete="new-password" style="display:none">
             </div>
             <button id="modal-submit" class="btn-primary full-width" onclick="handleModalSubmit()">Sign In</button>
             <div id="modal-divider" class="modal-divider"><hr><span>or</span><hr></div>
