@@ -247,34 +247,21 @@ def health():
 def get_stats():
     """Get platform statistics"""
     try:
+        from datetime import datetime, timedelta
         db = get_db()
         
-        # Count total users
-        total_users = db.users.count_documents({})
+        total_users = len(db.users)
+        total_sessions = len(db.chat_sessions)
+        message_count = len(db.messages)
+        total_moods = len(db.mood_entries)
         
-        # Count total sessions
-        total_sessions = db.sessions.count_documents({})
+        mood_counts = {}
+        for e in db.mood_entries:
+            mood_counts[e["mood"]] = mood_counts.get(e["mood"], 0) + 1
+        mood_dist = [{"_id": m, "count": c} for m, c in sorted(mood_counts.items(), key=lambda x: -x[1])]
         
-        # Count total messages
-        total_messages = db.sessions.aggregate([
-            {"$project": {"message_count": {"$size": "$messages"}}}
-        ])
-        message_count = sum([s.get("message_count", 0) for s in total_messages])
-        
-        # Count total mood entries
-        total_moods = db.mood_entries.count_documents({})
-        
-        # Get mood distribution
-        mood_pipeline = [
-            {"$group": {"_id": "$mood", "count": {"$sum": 1}}},
-            {"$sort": {"count": -1}}
-        ]
-        mood_dist = list(db.mood_entries.aggregate(mood_pipeline))
-        
-        # Active users (logged in last 7 days)
-        from datetime import datetime, timedelta
         week_ago = datetime.utcnow() - timedelta(days=7)
-        active_users = db.users.count_documents({"last_login": {"$gte": week_ago}})
+        active_users = sum(1 for u in db.users if u.get("last_login") and u["last_login"] >= week_ago)
         
         return jsonify({
             "total_users": total_users,
@@ -288,4 +275,4 @@ def get_stats():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(debug=True, port=5000)
+    app.run(host="0.0.0.0", debug=True, port=5000)
