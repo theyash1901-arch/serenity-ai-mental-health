@@ -478,7 +478,8 @@ async function createNewSession() {
     if (!res.ok) throw new Error('Failed to create session');
     
     const data = await res.json();
-    currentSessionId = data._id || data.id;
+    const sess = data.session || data;
+    currentSessionId = sess._id || sess.id;
     document.getElementById('chat-messages').innerHTML = '';
     initChat();
     loadUserSessions();
