@@ -12,6 +12,14 @@
 </head>
 <body>
 
+    <!-- Ambient Canvas -->
+    <canvas id="ambient-canvas"></canvas>
+
+    <!-- Daily Affirmation Bar -->
+    <div class="affirmation-bar" id="affirmation-bar" onclick="cycleAffirmation()">
+        <span id="affirmation-text">You are doing better than you think.</span>
+    </div>
+
     <!-- TOP NAVIGATION -->
     <nav id="topnav">
         <div class="nav-left">
@@ -265,6 +273,13 @@
                 </div>
             </div>
             <div class="cs-history">
+                <div class="streak-banner" id="streak-banner" onclick="showPage('mood-page')">
+                    <div class="streak-fire">🔥</div>
+                    <div class="streak-info">
+                        <strong id="streak-count">0 day streak</strong>
+                        <span>Keep checking in daily!</span>
+                    </div>
+                </div>
                 <div class="cs-hist-head">
                     <span class="cs-label">RECENT CHATS</span>
                     <button class="btn-new-chat" onclick="createNewSession()">New Chat</button>
@@ -324,9 +339,16 @@
         <!-- Right Panel -->
         <aside class="chat-right">
             <div class="cr-card cr-breathing">
-                <div class="breath-orb breathe">🌿</div>
-                <strong>4-7-8 Breathing</strong>
-                <p>Inhale 4s · Hold 7s · Exhale 8s</p>
+                <div class="breath-orb-wrap" onclick="toggleBreathing()">
+                    <div class="breath-ring"></div>
+                    <div class="breath-ring"></div>
+                    <div class="breath-ring"></div>
+                    <div class="breath-orb" id="breath-orb">🌿</div>
+                </div>
+                <div class="breath-label" id="breath-label">4-7-8 Breathing</div>
+                <div class="breath-phase" id="breath-phase">Tap to begin</div>
+                <div class="breath-timer" id="breath-timer" style="display:none;">4</div>
+                <button class="breath-start-btn" id="breath-btn" onclick="toggleBreathing()">Start Exercise</button>
             </div>
             <div class="cr-card cr-reflection">
                 <div class="cs-label">GENTLE REMINDER</div>
@@ -485,6 +507,24 @@
                     </div>
                 </div>
             </div>
+        </div>
+    </div>
+
+    <!-- MOOD CHECK-IN POPUP -->
+    <div id="mood-checkin-popup">
+        <button class="mcp-close" onclick="dismissCheckin()">×</button>
+        <div class="mcp-title">How are you feeling? 💚</div>
+        <div class="mcp-sub">A quick check-in takes 5 seconds.</div>
+        <div class="mcp-moods">
+            <div class="mcp-mood-btn" onclick="selectCheckinMood(this,'Happy',5)">😊<span>Happy</span></div>
+            <div class="mcp-mood-btn" onclick="selectCheckinMood(this,'Calm',4)">😌<span>Calm</span></div>
+            <div class="mcp-mood-btn" onclick="selectCheckinMood(this,'Sad',2)">😔<span>Sad</span></div>
+            <div class="mcp-mood-btn" onclick="selectCheckinMood(this,'Anxious',2)">😰<span>Anxious</span></div>
+            <div class="mcp-mood-btn" onclick="selectCheckinMood(this,'Angry',1)">😤<span>Angry</span></div>
+        </div>
+        <div class="mcp-actions">
+            <button class="mcp-btn-primary" onclick="submitCheckin()">Log Mood</button>
+            <button class="mcp-btn-skip" onclick="dismissCheckin()">Skip</button>
         </div>
     </div>
 
