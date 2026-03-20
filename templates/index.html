@@ -3,556 +3,256 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Serenity AI | Your compassionate companion</title>
+    <title>MindSpace - AI Mental Wellness Companion</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400;1,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
 </head>
 <body>
-
-    <canvas id="ambient-canvas"></canvas>
-
-    <!-- Affirmation Bar -->
-    <div class="affirmation-bar" id="affirmation-bar" onclick="cycleAffirmation()">
-        <span id="affirmation-text">You are doing better than you think.</span>
-    </div>
-
     <!-- Navigation -->
-    <nav id="topnav">
-        <div class="nav-left">
-            <div class="logo-icon">
-                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
+    <nav>
+        <div class="nav-container">
+            <div class="logo">🧠 MindSpace</div>
+            <ul class="nav-links">
+                <li><a href="#" onclick="showPage('home')" class="active">Home</a></li>
+                <li><a href="#" onclick="showPage('chat')">Chat</a></li>
+                <li><a href="#" onclick="showPage('mood')">Mood</a></li>
+                <li><a href="#" onclick="showPage('resources')">Resources</a></li>
+            </ul>
+            <div>
+                <span id="user-name" style="display:none; margin-right:16px; font-weight:600;"></span>
+                <button class="btn btn-primary" id="auth-btn" onclick="openModal()">Get Started</button>
+                <button class="btn btn-outline" id="logout-btn" onclick="logout()" style="display:none;">Logout</button>
             </div>
-            <div class="logo-text">Serenity <span>AI</span></div>
-        </div>
-        <div class="nav-center">
-            <a href="javascript:void(0)" onclick="showPage('landing')" class="nav-link active">Home</a>
-            <a href="javascript:void(0)" onclick="showPage('chat-page')" class="nav-link">Chat</a>
-            <a href="javascript:void(0)" onclick="showPage('mood-page')" class="nav-link">Mood Tracker</a>
-            <a href="javascript:void(0)" onclick="showPage('resources-page')" class="nav-link">Resources</a>
-        </div>
-        <div class="nav-right">
-            <span id="nav-username" style="display:none;font-size:14px;font-weight:500;margin-right:16px;color:var(--deep-sage)"></span>
-            <button class="btn-primary small-btn" id="nav-btn-start" onclick="openModal()">Get Started Free</button>
-            <button class="btn-ghost small-btn" id="nav-btn-logout" onclick="logout()" style="display:none;">Sign Out</button>
         </div>
     </nav>
 
-    <!-- PAGE 1: LANDING -->
-    <div id="landing" class="page active">
+    <!-- Home Page -->
+    <div id="home" class="page active">
         <section class="hero">
-            <div class="hero-left">
-                <div class="badge fade-up">
-                    <div class="pulse-dot"></div>
-                    Available 24/7 &middot; Completely Private
-                </div>
-                <h1 class="fade-up delay-1">Your space to <br><em>breathe, feel</em>, and heal.</h1>
-                <p class="fade-up delay-2">Serenity AI is a compassionate mental wellness companion offering empathetic conversation, guided breathing, mood tracking, and professional resources whenever you need support.</p>
-                <div class="hero-buttons fade-up delay-3">
-                    <button class="btn-primary" onclick="showPage('chat-page')">Begin Your Journey &rarr;</button>
-                    <button class="btn-ghost" onclick="document.querySelector('.features').scrollIntoView({behavior:'smooth'})">See How It Works</button>
-                </div>
-                <div class="social-proof fade-up delay-4">
-                    <div class="avatars">
-                        <div class="avatar" style="background:var(--sage)"></div>
-                        <div class="avatar" style="background:var(--sky)"></div>
-                        <div class="avatar" style="background:var(--lavender)"></div>
-                        <div class="avatar" style="background:var(--cream-dark)"></div>
-                    </div>
-                    <div class="proof-text">
-                        <strong>10,000+ people supported</strong><br>
-                        <span class="stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span> rated by our community
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Your Mental Wellness Journey Starts Here</h1>
+                    <p>AI-powered support, mood tracking, and resources to help you thrive. Available 24/7, completely private.</p>
+                    <div class="hero-buttons">
+                        <button class="btn btn-primary" onclick="showPage('chat')">Start Chatting →</button>
+                        <button class="btn btn-outline" style="background:rgba(255,255,255,0.2); border-color:white; color:white;" onclick="showPage('mood')">Track Mood</button>
                     </div>
                 </div>
-            </div>
-            <div class="hero-right">
-                <div class="orb orb-1"></div>
-                <div class="orb orb-2"></div>
-                <div class="orb orb-3"></div>
-                <div class="phone-mockup float">
-                    <div class="mockup-header">
-                        <div class="mh-left">
-                            <div class="mh-icon"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--deep-sage)" stroke-width="2.5"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/></svg></div>
-                            Serenity AI
-                        </div>
-                        <div class="mh-right"><div class="mh-dot"></div>Here for you</div>
-                    </div>
-                    <div class="mockup-chat">
-                        <div class="mb-ai">Hello. I'm Serenity. This is your safe space. How are you feeling today?</div>
-                        <div class="mb-user">I've been feeling really anxious lately...</div>
-                        <div class="mb-ai">I hear you, and your feelings are completely valid. Would you like to try a quick breathing exercise together?</div>
-                    </div>
-                    <div class="mockup-input">
-                        <div class="m-input-field">Type a message...</div>
-                        <div class="m-send-btn">
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
+                <div class="hero-image">
+                    <div class="hero-card">
+                        <h3 style="margin-bottom:16px;">💬 AI Companion</h3>
+                        <p style="color:#64748b; margin-bottom:20px;">Get instant support from our empathetic AI trained in mental wellness.</p>
+                        <div style="display:flex; gap:12px;">
+                            <div style="flex:1; padding:16px; background:#f1f5f9; border-radius:12px; text-align:center;">
+                                <div style="font-size:24px; font-weight:800; color:#6366f1;">24/7</div>
+                                <div style="font-size:12px; color:#64748b;">Available</div>
+                            </div>
+                            <div style="flex:1; padding:16px; background:#f1f5f9; border-radius:12px; text-align:center;">
+                                <div style="font-size:24px; font-weight:800; color:#10b981;">100%</div>
+                                <div style="font-size:12px; color:#64748b;">Private</div>
+                            </div>
+                            <div style="flex:1; padding:16px; background:#f1f5f9; border-radius:12px; text-align:center;">
+                                <div style="font-size:24px; font-weight:800; color:#ec4899;">Free</div>
+                                <div style="font-size:12px; color:#64748b;">Forever</div>
+                            </div>
                         </div>
                     </div>
                 </div>
             </div>
         </section>
 
-        <section class="features">
-            <div class="section-tag fade-up">WHAT WE OFFER</div>
-            <h2 class="fade-up delay-1">Everything you need to nurture your mental wellness</h2>
-            <p class="fade-up delay-2 section-desc">Discover tools designed to support your journey toward emotional balance and peace of mind.</p>
-            <div class="features-grid fade-up delay-3">
-                <div class="feature-card">
-                    <div class="f-icon" style="background:rgba(168,213,186,0.2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--deep-sage)" stroke-width="1.8"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                    <h3>Compassionate AI Chat</h3>
-                    <p>An empathetic AI companion trained to listen without judgment. Available around the clock for honest, supportive conversation whenever you need it most.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="f-icon" style="background:rgba(168,196,232,0.2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--navy)" stroke-width="1.8"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
-                    <h3>Mood Tracking</h3>
-                    <p>Log your emotions daily and visualize patterns over time. Understanding your emotional rhythms is the first step toward lasting wellbeing.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="f-icon" style="background:rgba(197,184,232,0.2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--lavender)" stroke-width="1.8"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg></div>
-                    <h3>Guided Breathing</h3>
-                    <p>Scientifically-backed breathing and grounding exercises to calm your nervous system in minutes. Accessible anytime you need relief.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="f-icon" style="background:rgba(240,200,200,0.25)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#C0392B" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
-                    <h3>Private and Secure</h3>
-                    <p>Your thoughts stay yours. End-to-end encrypted conversations and optional anonymous mode mean you can share openly without worry.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="f-icon" style="background:rgba(255,209,102,0.2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#B7791F" stroke-width="1.8"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg></div>
-                    <h3>Reflective Journaling</h3>
-                    <p>A private space to process your thoughts and emotions through writing. Guided prompts help you explore feelings at your own pace.</p>
-                </div>
-                <div class="feature-card">
-                    <div class="f-icon" style="background:rgba(168,213,186,0.2)"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--deep-sage)" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-                    <h3>Professional Resources</h3>
-                    <p>Curated mental health guides, crisis hotlines, and therapist directories — because sometimes you need more than an AI can offer.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="how-it-works">
-            <div class="section-tag fade-up">SIMPLE STEPS</div>
-            <h2 class="fade-up delay-1 text-center">Getting support has never been this easy</h2>
-            <div class="steps-grid fade-up delay-2">
-                <div class="step-card">
-                    <div class="s-circle"><span class="s-num">01</span></div>
-                    <h4>Create Your Space</h4>
-                    <p>Sign up in seconds or chat anonymously. No lengthy forms or commitments required.</p>
-                </div>
-                <div class="step-card">
-                    <div class="s-circle"><span class="s-num">02</span></div>
-                    <h4>Check In Daily</h4>
-                    <p>Share how you are feeling with a quick mood check-in. Every emotion is welcomed here.</p>
-                </div>
-                <div class="step-card">
-                    <div class="s-circle"><span class="s-num">03</span></div>
-                    <h4>Talk it Through</h4>
-                    <p>Chat with Serenity AI at any hour. Receive empathetic, thoughtful responses crafted for support.</p>
-                </div>
-                <div class="step-card">
-                    <div class="s-circle"><span class="s-num">04</span></div>
-                    <h4>Grow Over Time</h4>
-                    <p>Track your emotional journey, celebrate progress, and connect with professional help when needed.</p>
-                </div>
-            </div>
-        </section>
-
-        <section class="testimonials">
-            <div class="section-tag fade-up">COMMUNITY STORIES</div>
-            <h2 class="fade-up delay-1">Voices from our community</h2>
-            <div class="test-grid fade-up delay-2">
-                <div class="test-card t-cream">
-                    <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                    <div class="t-quote-mark">&ldquo;</div>
-                    <p class="t-quote">Serenity AI helped me through some of my darkest nights. Having something that genuinely listens without judgment changed everything for me.</p>
-                    <div class="t-author">
-                        <div class="ta-avatar" style="background:#7BAE8E"></div>
-                        <div class="ta-info"><strong>Sarah M.</strong><span>Using Serenity for 6 months</span></div>
+        <div class="container">
+            <h2 style="text-align:center; font-size:40px; margin-bottom:48px;">Everything You Need</h2>
+            <div class="dashboard-grid">
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); color:white;">💬</div>
                     </div>
+                    <h3 style="font-size:20px; margin-bottom:12px;">AI Chat Support</h3>
+                    <p style="color:#64748b;">Talk to our empathetic AI anytime. Get instant support, coping strategies, and a listening ear.</p>
                 </div>
-                <div class="test-card t-gradient">
-                    <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                    <div class="t-quote-mark">&ldquo;</div>
-                    <p class="t-quote">The mood tracking feature helped me realize my anxiety spikes every Sunday night. Now I prepare for it instead of being caught off guard.</p>
-                    <div class="t-author">
-                        <div class="ta-avatar" style="background:#8DB4D4"></div>
-                        <div class="ta-info"><strong>James K.</strong><span>Mood tracked for 3 months</span></div>
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:linear-gradient(135deg, #f093fb 0%, #f5576c 100%); color:white;">📊</div>
                     </div>
+                    <h3 style="font-size:20px; margin-bottom:12px;">Mood Tracking</h3>
+                    <p style="color:#64748b;">Log your emotions daily. Visualize patterns and understand your mental health journey.</p>
                 </div>
-                <div class="test-card t-cream">
-                    <div class="t-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-                    <div class="t-quote-mark">&ldquo;</div>
-                    <p class="t-quote">I was hesitant — could an AI really help? But the breathing exercises alone helped me manage my panic attacks better than anything I had tried.</p>
-                    <div class="t-author">
-                        <div class="ta-avatar" style="background:#B8AAD8"></div>
-                        <div class="ta-info"><strong>Aisha R.</strong><span>Joined after a difficult period</span></div>
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); color:white;">🧘</div>
                     </div>
+                    <h3 style="font-size:20px; margin-bottom:12px;">Guided Exercises</h3>
+                    <p style="color:#64748b;">Breathing techniques, meditation, and mindfulness exercises to calm your mind.</p>
+                </div>
+                <div class="dashboard-card">
+                    <div class="card-header">
+                        <div class="card-icon" style="background:linear-gradient(135deg, #43e97b 0%, #38f9d7 100%); color:white;">📚</div>
+                    </div>
+                    <h3 style="font-size:20px; margin-bottom:12px;">Resources</h3>
+                    <p style="color:#64748b;">Curated articles, tools, and professional help directories for your wellness.</p>
                 </div>
             </div>
-        </section>
-
-        <section class="cta-banner fade-up">
-            <div class="cta-orb cta-orb-1"></div>
-            <div class="cta-orb cta-orb-2"></div>
-            <div class="cta-left">
-                <div class="cta-tag">START YOUR JOURNEY</div>
-                <h2>You deserve support. <br>Begin today, <em>for free.</em></h2>
-            </div>
-            <div class="cta-right">
-                <button class="btn-white" onclick="openModal()">Create Free Account</button>
-                <button class="btn-ghost-white" onclick="openModal()">Sign In</button>
-            </div>
-        </section>
-
-        <footer>
-            <div class="footer-grid">
-                <div class="fc-brand">
-                    <div class="fb-logo">Serenity <span>AI</span></div>
-                    <p>Your compassionate companion for mental wellness and emotional balance.</p>
-                    <div class="f-crisis-bar">Crisis line: 988 (call or text, 24/7)</div>
-                </div>
-                <div class="fc-links">
-                    <h4>Product</h4>
-                    <a href="#" onclick="showPage('chat-page')">Chat</a>
-                    <a href="#" onclick="showPage('mood-page')">Mood Tracker</a>
-                    <a href="#" onclick="showPage('resources-page')">Resources</a>
-                    <a href="#">Breathing Exercises</a>
-                </div>
-                <div class="fc-links">
-                    <h4>Support</h4>
-                    <a href="#">Help Center</a>
-                    <a href="#">Privacy Policy</a>
-                    <a href="#">Terms of Service</a>
-                    <a href="#">Contact</a>
-                </div>
-                <div class="fc-links">
-                    <h4>Company</h4>
-                    <a href="#">About</a>
-                    <a href="#">Our Mission</a>
-                    <a href="#">Blog</a>
-                    <a href="#">Careers</a>
-                </div>
-            </div>
-            <div class="footer-bottom">
-                <div class="fb-left">&copy; 2025 Serenity AI. Not a substitute for professional mental health care.</div>
-                <div class="fb-right">Made with care for everyone</div>
-            </div>
-        </footer>
+        </div>
     </div>
 
-    <!-- PAGE 2: CHAT -->
-    <div id="chat-page" class="page chat-layout">
-        <aside class="chat-sidebar">
-            <div class="cs-header">
-                <h3>My Wellness</h3>
-                <p id="sidebar-date"></p>
-            </div>
-            <div class="cs-mood">
-                <div class="cs-label">TODAY'S MOOD</div>
-                <div class="mood-mini-grid">
-                    <div class="mood-mini-btn mood-dot-happy" onclick="setMiniMood(this)" data-mood="Happy">
-                        <div class="mood-dot"></div><span>Happy</span>
-                    </div>
-                    <div class="mood-mini-btn mood-dot-calm" onclick="setMiniMood(this)" data-mood="Calm">
-                        <div class="mood-dot"></div><span>Calm</span>
-                    </div>
-                    <div class="mood-mini-btn mood-dot-sad" onclick="setMiniMood(this)" data-mood="Sad">
-                        <div class="mood-dot"></div><span>Sad</span>
-                    </div>
-                    <div class="mood-mini-btn mood-dot-anxious" onclick="setMiniMood(this)" data-mood="Anxious">
-                        <div class="mood-dot"></div><span>Anxious</span>
-                    </div>
-                    <div class="mood-mini-btn mood-dot-angry" onclick="setMiniMood(this)" data-mood="Angry">
-                        <div class="mood-dot"></div><span>Angry</span>
-                    </div>
-                </div>
-            </div>
-            <div class="cs-history">
-                <div class="streak-banner" id="streak-banner" onclick="showPage('mood-page')">
-                    <div class="streak-icon">
-                        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
-                    </div>
-                    <div class="streak-info">
-                        <strong id="streak-count">0 day streak</strong>
-                        <span>Keep checking in daily</span>
-                    </div>
-                </div>
-                <div class="cs-hist-head">
-                    <span class="cs-label">RECENT CHATS</span>
-                    <button class="btn-new-chat" onclick="createNewSession()">New Chat</button>
-                </div>
+    <!-- Chat Page -->
+    <div id="chat" class="page">
+        <div class="chat-container">
+            <div class="chat-sidebar">
+                <h3 style="margin-bottom:20px;">Conversations</h3>
+                <button class="btn btn-primary" style="width:100%; margin-bottom:20px;" onclick="createNewSession()">+ New Chat</button>
                 <div id="session-list"></div>
             </div>
-            <div class="cs-tools">
-                <div class="cs-label">QUICK TOOLS</div>
-                <button class="tool-btn" onclick="showPage('mood-page')">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
-                    Mood Journal
-                </button>
-                <button class="tool-btn" onclick="showPage('resources-page')">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                    Resources
-                </button>
-                <button class="tool-btn" onclick="toggleBreathing()">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
-                    Breathing
-                </button>
-                <button class="tool-btn" onclick="showPage('mood-page')">
-                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-                    Journal Entry
-                </button>
-            </div>
-            <div class="cs-emergency">
-                <div class="em-title">
-                    <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-                    Crisis Support
-                </div>
-                <div class="em-line">Call or Text: 988</div>
-                <div class="em-line">Text HOME &rarr; 741741</div>
-                <div class="em-line">SAMHSA: 1-800-662-4357</div>
-            </div>
-        </aside>
-
-        <main class="chat-main">
-            <div class="cm-topbar">
-                <div class="cm-t-left">
-                    <div class="ai-circle-lg">
-                        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.8"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
-                    </div>
-                    <div class="ai-status">
-                        <strong>Serenity AI</strong>
-                        <div class="online-indicator"><div class="dot pulse"></div> Online &mdash; here for you</div>
+            
+            <div class="chat-main">
+                <div class="chat-header">
+                    <div class="chat-avatar">🤖</div>
+                    <div>
+                        <h3>MindSpace AI</h3>
+                        <p style="color:#64748b; font-size:14px;">Here to support you</p>
                     </div>
                 </div>
-                <div class="cm-t-right">
-                    <button class="btn-icon" title="Breathing" onclick="toggleBreathing()">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"/></svg>
-                    </button>
-                    <button class="btn-icon" title="Resources" onclick="showPage('resources-page')">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
-                    </button>
-                    <button class="btn-icon" title="Mood Tracker" onclick="showPage('mood-page')">
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+                <div class="chat-messages" id="chat-messages"></div>
+                <div class="chat-input-area">
+                    <textarea class="chat-input" id="chat-input" placeholder="Share what's on your mind..." rows="1" onkeydown="handleEnter(event)" oninput="autoResize(this)"></textarea>
+                    <button class="send-btn" id="send-btn" onclick="handleSendClick()">
+                        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z"/></svg>
                     </button>
                 </div>
             </div>
-            <div id="chat-messages" class="cm-messages"></div>
-            <div class="cm-quick-replies">
-                <button onclick="sendMessage(this.textContent)">I'm feeling stressed</button>
-                <button onclick="sendMessage(this.textContent)">I feel anxious</button>
-                <button onclick="sendMessage(this.textContent)">I feel lonely</button>
-                <button onclick="sendMessage(this.textContent)">I need to vent</button>
-                <button onclick="sendMessage(this.textContent)">I'm struggling to sleep</button>
-                <button onclick="sendMessage(this.textContent)">I feel overwhelmed</button>
-            </div>
-            <div class="cm-input-area">
-                <textarea id="chat-input" placeholder="Share what's on your mind..." oninput="autoResize(this)" onkeydown="handleEnter(event)" maxlength="2000" aria-label="Message input"></textarea>
-                <button id="send-btn" class="send-btn" onclick="handleSendClick()" aria-label="Send message">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5"><line x1="12" y1="19" x2="12" y2="5"/><polyline points="5 12 12 5 19 12"/></svg>
-                </button>
-            </div>
-        </main>
 
-        <aside class="chat-right">
-            <div class="cr-card cr-breathing">
-                <div class="breath-orb-wrap" onclick="toggleBreathing()">
-                    <div class="breath-ring"></div>
-                    <div class="breath-ring"></div>
-                    <div class="breath-ring"></div>
-                    <div class="breath-orb" id="breath-orb">
-                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="1.6"><path d="M11 20A7 7 0 0 1 9.8 6.1C15.5 5 17 4.48 19 2c1 2 2 4.18 2 8 0 5.5-4.78 10-10 10z"/><path d="M2 21c0-3 1.85-5.36 5.08-6C9.5 14.52 12 13 13 12"/></svg>
-                    </div>
+            <div class="chat-sidebar">
+                <h3 style="margin-bottom:20px;">Quick Actions</h3>
+                <button class="btn btn-outline" style="width:100%; margin-bottom:12px;" onclick="showPage('mood')">Log Mood</button>
+                <button class="btn btn-outline" style="width:100%; margin-bottom:12px;" onclick="showPage('resources')">Resources</button>
+                
+                <div style="margin-top:32px; padding:20px; background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius:16px;">
+                    <h4 style="margin-bottom:8px;">🔥 Streak</h4>
+                    <p style="font-size:28px; font-weight:800; color:#92400e;" id="streak-count">0 days</p>
+                    <p style="font-size:13px; color:#92400e;">Keep it up!</p>
                 </div>
-                <div class="breath-label" id="breath-label">4-7-8 Breathing</div>
-                <div class="breath-phase" id="breath-phase">Tap to begin</div>
-                <div class="breath-timer" id="breath-timer" style="display:none">4</div>
-                <button class="breath-start-btn" id="breath-btn" onclick="toggleBreathing()">Start Exercise</button>
-            </div>
-            <div class="cr-card cr-reflection">
-                <div class="cs-label">GENTLE REMINDER</div>
-                <blockquote id="reflection-quote">"You don't have to be positive all the time. It's perfectly okay to feel sad, angry, annoyed, or frustrated."</blockquote>
-            </div>
-            <div class="cr-card cr-weekly-mood">
-                <h4>This Week's Mood</h4>
-                <div id="right-mini-bars" class="mini-bars"></div>
-            </div>
-        </aside>
-    </div>
 
-    <!-- PAGE 3: MOOD TRACKER -->
-    <div id="mood-page" class="page scrollable-page">
-        <div class="sp-container">
-            <header class="sp-header">
-                <div class="section-tag">YOUR EMOTIONAL JOURNEY</div>
-                <h2>Mood Journal</h2>
-                <p class="section-desc">Track your feelings over time to recognize patterns and build emotional awareness.</p>
-            </header>
-            <div class="mood-dashboard">
-                <div class="md-chart-card">
-                    <h3>Weekly Overview</h3>
-                    <p>Your emotional rhythm over the last 7 days.</p>
-                    <div id="big-bar-chart" class="big-bars"></div>
-                </div>
-                <div class="md-stats">
-                    <div class="md-stat-card">
-                        <div class="mds-value" id="stat-avg">--</div>
-                        <div class="mds-label">Average mood score</div>
-                        <div class="mds-change">&uarr; from last week</div>
-                    </div>
-                    <div class="mds-card-row">
-                        <div class="md-stat-card">
-                            <div class="mds-value navy" id="stat-days">0</div>
-                            <div class="mds-label">Days logged this week</div>
-                            <div class="mds-note">Keep it up</div>
-                        </div>
-                        <div class="md-stat-card">
-                            <div class="mds-value mood-text-val" id="stat-mood">--</div>
-                            <div class="mds-label">Most common feeling</div>
-                            <div class="mds-mood-text" id="stat-mood-text">None</div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-            <div class="mood-logs-grid">
-                <div class="ml-log-card">
-                    <h3>Log Today</h3>
-                    <p>How are you feeling right now?</p>
-                    <div class="ml-mood-selector">
-                        <div class="ml-ms-btn mood-happy" onclick="selectMood('Happy',5,this)">
-                            <div class="ms-swatch"></div>Happy
-                        </div>
-                        <div class="ml-ms-btn mood-calm" onclick="selectMood('Calm',4,this)">
-                            <div class="ms-swatch"></div>Calm
-                        </div>
-                        <div class="ml-ms-btn mood-sad" onclick="selectMood('Sad',2,this)">
-                            <div class="ms-swatch"></div>Sad
-                        </div>
-                        <div class="ml-ms-btn mood-anxious" onclick="selectMood('Anxious',2,this)">
-                            <div class="ms-swatch"></div>Anxious
-                        </div>
-                        <div class="ml-ms-btn mood-angry" onclick="selectMood('Angry',1,this)">
-                            <div class="ms-swatch"></div>Angry
-                        </div>
-                    </div>
-                    <div id="emo-chips" class="ml-emo-chips"></div>
-                    <textarea id="mood-journal" placeholder="Add a journal entry (optional) — what's on your mind?" maxlength="1000" aria-label="Mood journal entry"></textarea>
-                    <button class="btn-primary full-width" onclick="saveMoodEntry()">Save Entry</button>
-                    <div id="save-mood-msg" style="display:none;margin-top:12px;font-size:13px;text-align:center"></div>
-                </div>
-                <div class="ml-recent-card">
-                    <h3>Recent Entries</h3>
-                    <p>Your last check-ins</p>
-                    <div id="recent-entries" class="ml-recent-list"></div>
+                <div style="margin-top:20px; padding:20px; background:#fee2e2; border-radius:16px;">
+                    <h4 style="margin-bottom:12px; color:#991b1b;">🆘 Crisis Support</h4>
+                    <p style="font-size:13px; color:#991b1b; margin-bottom:8px;">Call/Text: <strong>988</strong></p>
+                    <p style="font-size:13px; color:#991b1b;">Text HOME to <strong>741741</strong></p>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- PAGE 4: RESOURCES -->
-    <div id="resources-page" class="page scrollable-page">
-        <div class="sp-container">
-            <header class="sp-header">
-                <div class="section-tag">SUPPORT HUB</div>
-                <h2>Mental Health Resources</h2>
-                <p class="section-desc">Expert-curated guides, exercises, and tools for your wellness journey.</p>
-            </header>
-            <div class="crisis-banner">
-                <div class="cb-left">
-                    <div class="cb-tag">IF YOU ARE IN CRISIS</div>
-                    <h2>You are not alone. Help is always available.</h2>
-                    <p>Free, confidential support is just a call or text away.</p>
+    <!-- Mood Page -->
+    <div id="mood" class="page">
+        <div class="container">
+            <h1 style="font-size:40px; margin-bottom:16px;">How are you feeling?</h1>
+            <p style="color:#64748b; font-size:18px; margin-bottom:40px;">Track your emotions to understand patterns and improve your wellbeing.</p>
+            
+            <div class="mood-grid">
+                <div class="mood-card happy" onclick="selectMood('Happy', 5, this)">
+                    <div class="mood-icon">😊</div>
+                    <div class="mood-label">Happy</div>
                 </div>
-                <div class="cb-right">
-                    <div class="cb-card">
-                        <div class="cbc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13a19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 3.62 2h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg></div>
-                        <div class="cbc-info"><strong>National Crisis Line</strong><span>Call or text 24/7</span></div>
-                        <div class="cbc-number">988</div>
-                    </div>
-                    <div class="cb-card">
-                        <div class="cbc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></div>
-                        <div class="cbc-info"><strong>Crisis Text Line</strong><span>Text HOME to start</span></div>
-                        <div class="cbc-number">741741</div>
-                    </div>
-                    <div class="cb-card">
-                        <div class="cbc-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
-                        <div class="cbc-info"><strong>SAMHSA Helpline</strong><span>Mental health and substance</span></div>
-                        <div class="cbc-number">1-800-662-4357</div>
-                    </div>
+                <div class="mood-card calm" onclick="selectMood('Calm', 4, this)">
+                    <div class="mood-icon">😌</div>
+                    <div class="mood-label">Calm</div>
+                </div>
+                <div class="mood-card sad" onclick="selectMood('Sad', 2, this)">
+                    <div class="mood-icon">😢</div>
+                    <div class="mood-label">Sad</div>
+                </div>
+                <div class="mood-card anxious" onclick="selectMood('Anxious', 2, this)">
+                    <div class="mood-icon">😰</div>
+                    <div class="mood-label">Anxious</div>
+                </div>
+                <div class="mood-card angry" onclick="selectMood('Angry', 1, this)">
+                    <div class="mood-icon">😠</div>
+                    <div class="mood-label">Angry</div>
                 </div>
             </div>
-            <div class="res-filter-tabs">
-                <button class="rf-tab active" onclick="filterRes(this,'all')">All Resources</button>
-                <button class="rf-tab rf-article" onclick="filterRes(this,'article')">Articles</button>
-                <button class="rf-tab rf-exercise" onclick="filterRes(this,'exercise')">Exercises</button>
-                <button class="rf-tab rf-guide" onclick="filterRes(this,'guide')">Guides</button>
-                <button class="rf-tab rf-tool" onclick="filterRes(this,'tool')">Tools</button>
+
+            <div style="margin-top:40px; max-width:800px; margin-left:auto; margin-right:auto;">
+                <textarea class="form-input" id="mood-note" placeholder="Add a note about how you're feeling... (optional)" rows="4" style="margin-bottom:20px;"></textarea>
+                <button class="btn btn-primary" style="width:100%;" onclick="saveMood()">Save Mood Entry</button>
             </div>
-            <div id="res-grid" class="res-grid"></div>
-            <div class="pro-help-section">
-                <div class="section-tag">READY FOR PERSONAL CARE</div>
-                <h2>Professional Help Resources</h2>
-                <div class="pro-grid">
-                    <div class="pro-card">
-                        <div class="pc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--deep-sage)" stroke-width="1.8"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg></div>
-                        <div class="pc-content">
-                            <h4>Find a Therapist</h4>
-                            <p>Search a verified directory of licensed therapists filtered by specialty, insurance, and availability.</p>
-                            <button class="btn-primary small-btn">Search Directory &rarr;</button>
-                        </div>
+
+            <div style="margin-top:60px;">
+                <h2 style="font-size:32px; margin-bottom:32px;">Your Mood History</h2>
+                <div class="dashboard-grid">
+                    <div class="dashboard-card">
+                        <div class="card-value" style="background:linear-gradient(135deg, #667eea 0%, #764ba2 100%); -webkit-background-clip:text; -webkit-text-fill-color:transparent;" id="avg-mood">--</div>
+                        <div class="card-label">Average Mood Score</div>
                     </div>
-                    <div class="pro-card">
-                        <div class="pc-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="var(--deep-sage)" stroke-width="1.8"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></div>
-                        <div class="pc-content">
-                            <h4>Psychiatry and Medication</h4>
-                            <p>Connect with licensed psychiatrists who can evaluate whether medication-assisted treatment is right for you.</p>
-                            <button class="btn-primary small-btn">Learn More &rarr;</button>
-                        </div>
+                    <div class="dashboard-card">
+                        <div class="card-value" style="color:#10b981;" id="total-entries">0</div>
+                        <div class="card-label">Total Entries</div>
+                    </div>
+                    <div class="dashboard-card">
+                        <div class="card-value" style="color:#ec4899;" id="streak-days">0</div>
+                        <div class="card-label">Day Streak</div>
                     </div>
                 </div>
+                <div id="mood-history" style="margin-top:32px;"></div>
             </div>
         </div>
     </div>
 
-    <!-- MOOD CHECK-IN POPUP -->
-    <div id="mood-checkin-popup">
-        <button class="mcp-close" onclick="dismissCheckin()">&times;</button>
-        <div class="mcp-title">How are you feeling?</div>
-        <div class="mcp-sub">A quick check-in takes just a moment.</div>
-        <div class="mcp-moods">
-            <div class="mcp-mood-btn mcp-happy" onclick="selectCheckinMood(this,'Happy',5)"><div class="mcp-dot"></div><span>Happy</span></div>
-            <div class="mcp-mood-btn mcp-calm" onclick="selectCheckinMood(this,'Calm',4)"><div class="mcp-dot"></div><span>Calm</span></div>
-            <div class="mcp-mood-btn mcp-sad" onclick="selectCheckinMood(this,'Sad',2)"><div class="mcp-dot"></div><span>Sad</span></div>
-            <div class="mcp-mood-btn mcp-anxious" onclick="selectCheckinMood(this,'Anxious',2)"><div class="mcp-dot"></div><span>Anxious</span></div>
-            <div class="mcp-mood-btn mcp-angry" onclick="selectCheckinMood(this,'Angry',1)"><div class="mcp-dot"></div><span>Angry</span></div>
-        </div>
-        <div class="mcp-actions">
-            <button class="mcp-btn-primary" onclick="submitCheckin()">Log Mood</button>
-            <button class="mcp-btn-skip" onclick="dismissCheckin()">Skip</button>
+    <!-- Resources Page -->
+    <div id="resources" class="page">
+        <div class="container">
+            <h1 style="font-size:40px; margin-bottom:16px;">Mental Health Resources</h1>
+            <p style="color:#64748b; font-size:18px; margin-bottom:40px;">Curated content to support your mental wellness journey.</p>
+            
+            <div class="resource-filters">
+                <button class="filter-btn active" onclick="filterResources('all', this)">All</button>
+                <button class="filter-btn" onclick="filterResources('article', this)">Articles</button>
+                <button class="filter-btn" onclick="filterResources('exercise', this)">Exercises</button>
+                <button class="filter-btn" onclick="filterResources('guide', this)">Guides</button>
+                <button class="filter-btn" onclick="filterResources('tool', this)">Tools</button>
+            </div>
+
+            <div class="resource-grid" id="resource-grid"></div>
         </div>
     </div>
 
-    <!-- MODAL -->
-    <div id="modal-overlay" onclick="handleOverlayClick(event)">
-        <div class="modal-card">
-            <button class="modal-close" onclick="closeModal()">&times;</button>
-            <h2>Welcome to Serenity</h2>
-            <p class="modal-desc">Your safe space begins here. Free forever — no credit card needed.</p>
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="modal-overlay" onclick="handleOverlayClick(event)">
+        <div class="modal">
+            <div class="modal-header">
+                <h2 class="modal-title">Welcome to MindSpace</h2>
+                <p class="modal-subtitle">Your safe space for mental wellness</p>
+            </div>
+            
             <div class="modal-tabs">
-                <button class="mtab active" id="mtab-login" onclick="switchModalTab('login')">Sign In</button>
-                <button class="mtab" id="mtab-signup" onclick="switchModalTab('signup')">Create Account</button>
-                <button class="mtab" id="mtab-anon" onclick="switchModalTab('anon')">Anonymous</button>
+                <button class="modal-tab active" id="tab-login" onclick="switchTab('login')">Sign In</button>
+                <button class="modal-tab" id="tab-signup" onclick="switchTab('signup')">Sign Up</button>
+                <button class="modal-tab" id="tab-anon" onclick="switchTab('anon')">Anonymous</button>
             </div>
-            <div id="modal-error" style="display:none;color:#C0392B;font-size:13px;margin:-8px 0 8px"></div>
-            <div class="modal-fields">
-                <input type="email" id="modal-email" placeholder="Email address" autocomplete="email" required>
-                <input type="password" id="modal-password" placeholder="Password (min 6 chars)" autocomplete="current-password" required>
-                <input type="password" id="modal-confirm" placeholder="Confirm Password" autocomplete="new-password" style="display:none">
+
+            <div id="form-error" class="form-error"></div>
+
+            <div id="auth-fields">
+                <div class="form-group">
+                    <label class="form-label">Email</label>
+                    <input type="email" class="form-input" id="email" placeholder="your@email.com" autocomplete="email">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Password</label>
+                    <input type="password" class="form-input" id="password" placeholder="••••••••" autocomplete="current-password">
+                </div>
+                <div class="form-group" id="confirm-group" style="display:none;">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" class="form-input" id="confirm" placeholder="••••••••">
+                </div>
             </div>
-            <button id="modal-submit" class="btn-primary full-width" onclick="handleModalSubmit()">Sign In</button>
-            <div id="modal-divider" class="modal-divider"><hr><span>or</span><hr></div>
-            <button id="modal-anon-btn" class="btn-ghost full-width" onclick="handleAnonymous()">Continue Anonymously — No Account Needed</button>
-            <p class="modal-fineprint">By continuing you agree to our Terms and Privacy Policy. Serenity AI is not a substitute for professional mental health care.</p>
+
+            <button class="btn btn-primary" id="submit-btn" onclick="handleAuth()" style="width:100%; margin-top:24px;">Sign In</button>
+            
+            <p style="text-align:center; margin-top:20px; font-size:13px; color:#64748b;">
+                By continuing, you agree to our Terms & Privacy Policy
+            </p>
         </div>
     </div>
 
