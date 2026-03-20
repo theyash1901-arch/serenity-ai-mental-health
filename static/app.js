@@ -548,7 +548,7 @@ async function loadSession(id) {
 }
 
 function initChat() {
-  appendMessage("Hello! I'm your MindSpace AI companion. I'm here to listen and support you. How are you feeling today?", 'ai');
+  appendMessage("Hello! I'm MindSpace, your AI companion. I'm here to listen and support you. How are you feeling today?", 'ai');
 }
 
 function handleEnter(e) {
