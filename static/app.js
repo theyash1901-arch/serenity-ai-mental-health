@@ -164,35 +164,132 @@ function formatNumber(num) {
   return num.toString();
 }
 
+let moodDoughnutChart = null;
+let moodBarChart = null;
+
+const MOOD_COLORS = {
+  'Happy':   { bg: '#fbbf24', border: '#f59e0b' },
+  'Calm':    { bg: '#34d399', border: '#10b981' },
+  'Sad':     { bg: '#60a5fa', border: '#3b82f6' },
+  'Anxious': { bg: '#a78bfa', border: '#8b5cf6' },
+  'Angry':   { bg: '#f87171', border: '#ef4444' }
+};
+
 function renderMoodChart(moodData) {
-  const chart = document.getElementById('mood-chart');
-  if (!chart) return;
-  
-  const moodColors = {
-    'Happy': 'linear-gradient(135deg, #fef3c7 0%, #fde68a 100%)',
-    'Calm': 'linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%)',
-    'Sad': 'linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%)',
-    'Anxious': 'linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%)',
-    'Angry': 'linear-gradient(135deg, #fee2e2 0%, #fecaca 100%)'
-  };
-  
+  const wrapper = document.getElementById('mood-charts-wrapper');
+  const empty = document.getElementById('mood-chart-empty');
+
+  if (!wrapper) return;
+
   if (moodData.length === 0) {
-    chart.innerHTML = '<p style="color:#64748b; text-align:center; width:100%;">No mood data yet. Start tracking to see insights!</p>';
+    wrapper.style.display = 'none';
+    if (empty) empty.style.display = 'block';
     return;
   }
-  
-  const maxCount = Math.max(...moodData.map(m => m.count));
-  
-  chart.innerHTML = moodData.map(mood => {
-    const height = (mood.count / maxCount) * 100;
-    return `
-      <div style="flex:1; display:flex; flex-direction:column; align-items:center; gap:8px;">
-        <div style="font-weight:600; font-size:14px; color:#64748b;">${mood.count}</div>
-        <div style="width:100%; max-width:80px; height:${height}%; min-height:20px; background:${moodColors[mood._id] || '#e2e8f0'}; border-radius:8px 8px 0 0; transition:height 0.5s ease;"></div>
-        <div style="font-size:12px; color:#64748b; font-weight:500;">${mood._id}</div>
-      </div>
-    `;
-  }).join('');
+
+  wrapper.style.display = 'grid';
+  if (empty) empty.style.display = 'none';
+
+  const ALL_MOODS = ['Happy', 'Calm', 'Sad', 'Anxious', 'Angry'];
+  const countMap = {};
+  moodData.forEach(m => { countMap[m._id] = m.count; });
+
+  const labels = ALL_MOODS.filter(m => countMap[m] !== undefined);
+  const counts = labels.map(m => countMap[m] || 0);
+  const total = counts.reduce((a, b) => a + b, 0);
+  const bgColors = labels.map(m => (MOOD_COLORS[m] || { bg: '#94a3b8' }).bg);
+  const borderColors = labels.map(m => (MOOD_COLORS[m] || { border: '#64748b' }).border);
+
+  const totalEl = document.getElementById('mood-total-count');
+  if (totalEl) totalEl.textContent = total;
+
+  const doughnutCanvas = document.getElementById('mood-doughnut-chart');
+  const barCanvas = document.getElementById('mood-bar-chart');
+  if (!doughnutCanvas || !barCanvas) return;
+
+  const commonFont = { family: "'Inter', sans-serif" };
+
+  if (moodDoughnutChart) moodDoughnutChart.destroy();
+  moodDoughnutChart = new Chart(doughnutCanvas, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{
+        data: counts,
+        backgroundColor: bgColors,
+        borderColor: borderColors,
+        borderWidth: 2,
+        hoverOffset: 8
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      cutout: '68%',
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: {
+            label: ctx => {
+              const pct = total > 0 ? Math.round((ctx.parsed / total) * 100) : 0;
+              return ` ${ctx.label}: ${ctx.parsed} (${pct}%)`;
+            }
+          },
+          bodyFont: commonFont,
+          titleFont: commonFont
+        }
+      },
+      animation: { animateRotate: true, duration: 800 }
+    }
+  });
+
+  if (moodBarChart) moodBarChart.destroy();
+  moodBarChart = new Chart(barCanvas, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: [{
+        label: 'Entries',
+        data: counts,
+        backgroundColor: bgColors,
+        borderColor: borderColors,
+        borderWidth: 2,
+        borderRadius: 8,
+        borderSkipped: false
+      }]
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: {
+          callbacks: { label: ctx => ` ${ctx.parsed.y} entries` },
+          bodyFont: commonFont,
+          titleFont: commonFont
+        }
+      },
+      scales: {
+        x: {
+          grid: { display: false },
+          ticks: { font: { ...commonFont, size: 12 }, color: '#64748b' },
+          border: { display: false }
+        },
+        y: {
+          beginAtZero: true,
+          ticks: {
+            font: { ...commonFont, size: 11 },
+            color: '#94a3b8',
+            stepSize: 1,
+            precision: 0
+          },
+          grid: { color: '#f1f5f9' },
+          border: { display: false }
+        }
+      },
+      animation: { duration: 800 }
+    }
+  });
 }
 
 // Page Navigation

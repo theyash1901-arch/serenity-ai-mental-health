@@ -8,6 +8,7 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -82,29 +83,43 @@
         <div class="container">
             <!-- Mood Distribution Chart -->
             <div style="background:white; border-radius:24px; padding:40px; margin-bottom:60px; box-shadow:0 10px 40px rgba(0,0,0,0.1);">
-                <h2 style="text-align:center; font-size:32px; margin-bottom:16px;">Community Mood Insights</h2>
+                <h2 style="text-align:center; font-size:32px; margin-bottom:8px;">Community Mood Insights</h2>
                 <p style="text-align:center; color:#64748b; margin-bottom:40px;">Real-time emotional wellness data from our community</p>
-                <div id="mood-chart" style="display:flex; align-items:flex-end; justify-content:center; gap:20px; height:200px; margin-bottom:20px;"></div>
-                <div style="display:flex; justify-content:center; gap:24px; flex-wrap:wrap;">
+                <div id="mood-chart-empty" style="display:none; text-align:center; padding:40px 0; color:#64748b;">
+                    No mood data yet. Start tracking to see insights!
+                </div>
+                <div id="mood-charts-wrapper" style="display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:center;">
+                    <div style="position:relative; height:260px; display:flex; align-items:center; justify-content:center;">
+                        <canvas id="mood-doughnut-chart"></canvas>
+                        <div id="mood-doughnut-center" style="position:absolute; text-align:center; pointer-events:none;">
+                            <div style="font-size:28px; font-weight:800; color:#1e293b;" id="mood-total-count">0</div>
+                            <div style="font-size:12px; color:#64748b; font-weight:500;">total logs</div>
+                        </div>
+                    </div>
+                    <div style="position:relative; height:260px;">
+                        <canvas id="mood-bar-chart"></canvas>
+                    </div>
+                </div>
+                <div style="display:flex; justify-content:center; gap:24px; flex-wrap:wrap; margin-top:28px;">
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <div style="width:16px; height:16px; border-radius:4px; background:linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);"></div>
-                        <span style="font-size:14px; color:#64748b;">Happy</span>
+                        <div style="width:14px; height:14px; border-radius:3px; background:#fbbf24;"></div>
+                        <span style="font-size:13px; color:#64748b; font-weight:500;">Happy</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <div style="width:16px; height:16px; border-radius:4px; background:linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);"></div>
-                        <span style="font-size:14px; color:#64748b;">Calm</span>
+                        <div style="width:14px; height:14px; border-radius:3px; background:#34d399;"></div>
+                        <span style="font-size:13px; color:#64748b; font-weight:500;">Calm</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <div style="width:16px; height:16px; border-radius:4px; background:linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);"></div>
-                        <span style="font-size:14px; color:#64748b;">Sad</span>
+                        <div style="width:14px; height:14px; border-radius:3px; background:#60a5fa;"></div>
+                        <span style="font-size:13px; color:#64748b; font-weight:500;">Sad</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <div style="width:16px; height:16px; border-radius:4px; background:linear-gradient(135deg, #e9d5ff 0%, #d8b4fe 100%);"></div>
-                        <span style="font-size:14px; color:#64748b;">Anxious</span>
+                        <div style="width:14px; height:14px; border-radius:3px; background:#a78bfa;"></div>
+                        <span style="font-size:13px; color:#64748b; font-weight:500;">Anxious</span>
                     </div>
                     <div style="display:flex; align-items:center; gap:8px;">
-                        <div style="width:16px; height:16px; border-radius:4px; background:linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);"></div>
-                        <span style="font-size:14px; color:#64748b;">Angry</span>
+                        <div style="width:14px; height:14px; border-radius:3px; background:#f87171;"></div>
+                        <span style="font-size:13px; color:#64748b; font-weight:500;">Angry</span>
                     </div>
                 </div>
             </div>
